@@ -1,0 +1,28 @@
+package node
+
+modules = Node
+  , Node.Error
+  , Node.FS
+  , Node.FS.Stats
+  , Node.FS.Stream
+  , Node.Headers
+  , Node.HTTP
+  , Node.HTTP.Client
+  , Node.HTTP.Server
+  , Node.HTTPS
+  , Node.HTTPS.Server
+  , Node.HTTP2
+  , Node.HTTP2.Client
+  , Node.HTTP2.Server
+  , Node.Net.Server
+  , Node.TLS.Context
+  , Node.TLS.Server
+  , Node.URI
+  , Data.Buffer.Ext
+
+depends = promise
+
+opts      = "--codegen node"
+
+sourcedir = "src"
+
