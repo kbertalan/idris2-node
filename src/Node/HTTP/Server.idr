@@ -1,8 +1,10 @@
 module Node.HTTP.Server
 
+import Data.Buffer
 import public Node.HTTP
 import public Node.Headers
 import public Node.Net.Server
+import public Node.Stream
 
 export
 data IncomingMessage : Type where [external]
@@ -28,42 +30,10 @@ namespace Request
   %foreign "node:lambda: req => req.url"
   (.url) : IncomingMessage -> String
 
-  %foreign "node:lambda: (ty, req, data) => { req.on('data', a => data(a)()) }"
-  ffi_onData : IncomingMessage -> (a -> PrimIO ()) -> PrimIO ()
-
-  export
-  (.onData) : HasIO io => IncomingMessage -> (a -> IO ()) -> io ()
-  (.onData) req cb = primIO $ ffi_onData req $ \a => toPrim $ cb a
-
-  %foreign "node:lambda: (req, end) => { req.on('end', () => end()()) }"
-  ffi_onEnd : IncomingMessage -> (() -> PrimIO ()) -> PrimIO ()
-
-  export
-  (.onEnd) : HasIO io => IncomingMessage -> (() -> IO ()) -> io ()
-  (.onEnd) req cb = primIO $ ffi_onEnd req $ \_ => toPrim $ cb ()
-
-  %foreign "node:lambda: (ty, req, error) => { req.on('error', e => error(e)()) }"
-  ffi_onError : IncomingMessage -> (e -> PrimIO ()) -> PrimIO ()
-
-  export
-  (.onError) : HasIO io => IncomingMessage -> (e -> IO ()) -> io ()
-  (.onError) req cb = primIO $ ffi_onError req $ \e => toPrim $ cb e
+  public export
+  implementation Readable Buffer IncomingMessage where
 
 namespace Response
-
-  %foreign "node:lambda: res => res.end()"
-  ffi_end : ServerResponse -> PrimIO ()
-
-  export
-  (.end) : HasIO io => ServerResponse -> io ()
-  (.end) res = primIO $ ffi_end res
-
-  %foreign "node:lambda: (ty, res, data) => res.write(data)"
-  ffi_write : { 0 a : _ } -> ServerResponse -> a -> PrimIO ()
-
-  export
-  (.write) : HasIO io => ServerResponse -> a -> io ()
-  (.write) res a = primIO $ ffi_write res a
 
   %foreign "node:lambda: (res, status, headers) => res.writeHead(status, headers)"
   ffi_writeHead : ServerResponse -> Int -> Headers -> PrimIO ()
@@ -71,6 +41,9 @@ namespace Response
   export
   (.writeHead) : HasIO io => ServerResponse -> Int -> Headers -> io ()
   (.writeHead) res status headers = primIO $ ffi_writeHead res status headers
+
+  public export
+  implementation Writeable Buffer ServerResponse where
 
 public export
 record Options where

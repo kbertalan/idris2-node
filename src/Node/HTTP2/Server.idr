@@ -1,10 +1,12 @@
 module Node.HTTP2.Server
 
+import Data.Buffer
 import Data.Maybe
 import public Node.Error
 import public Node.HTTP2
 import public Node.Headers
 import public Node.Net.Server
+import public Node.Stream
 import public Node.TLS.Context
 import public Node.TLS.Server
 
@@ -13,40 +15,11 @@ data ServerHttp2Stream : Type where [external]
 
 namespace Stream
 
-  %foreign "node:lambda: (ty, stream, data) => { stream.on('data', a => data(a)()) }"
-  ffi_onData : ServerHttp2Stream -> (a -> PrimIO ()) -> PrimIO ()
+  public export
+  implementation Readable Buffer ServerHttp2Stream where
 
-  export
-  (.onData) : HasIO io => ServerHttp2Stream -> (a -> IO ()) -> io ()
-  (.onData) stream cb = primIO $ ffi_onData stream $ \a => toPrim $ cb a
-
-  %foreign "node:lambda: (stream, end) => { stream.on('end', () => end()()) }"
-  ffi_onEnd : ServerHttp2Stream -> (() -> PrimIO ()) -> PrimIO ()
-
-  export
-  (.onEnd) : HasIO io => ServerHttp2Stream -> (() -> IO ()) -> io ()
-  (.onEnd) stream cb = primIO $ ffi_onEnd stream $ \_ => toPrim $ cb ()
-
-  %foreign "node:lambda: (ty, stream, error) => { stream.on('error', e => error(e)()) }"
-  ffi_onError : ServerHttp2Stream -> (e -> PrimIO ()) -> PrimIO ()
-
-  export
-  (.onError) : HasIO io => ServerHttp2Stream -> (e -> IO ()) -> io ()
-  (.onError) stream cb = primIO $ ffi_onError stream $ \e => toPrim $ cb e
-
-  %foreign "node:lambda: stream => stream.end()"
-  ffi_end : ServerHttp2Stream -> PrimIO ()
-
-  export
-  (.end) : HasIO io => ServerHttp2Stream -> io ()
-  (.end) stream = primIO $ ffi_end stream
-
-  %foreign "node:lambda: (ty, stream, data) => stream.write(data)"
-  ffi_write : { 0 a : _ } -> ServerHttp2Stream -> a -> PrimIO ()
-
-  export
-  (.write) : HasIO io => ServerHttp2Stream -> a -> io ()
-  (.write) stream a = primIO $ ffi_write stream a
+  public export
+  implementation Writeable Buffer ServerHttp2Stream where
 
   %foreign "node:lambda: (stream, headers) => stream.respond(headers)"
   ffi_respond : ServerHttp2Stream -> Headers -> PrimIO ()

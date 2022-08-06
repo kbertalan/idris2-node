@@ -15,6 +15,10 @@ modules = Node
   , Node.HTTP2.Client
   , Node.HTTP2.Server
   , Node.Net.Server
+  , Node.Stream
+  , Node.Stream.FFI
+  , Node.Stream.Writeable
+  , Node.Stream.Readable
   , Node.TLS.Context
   , Node.TLS.Server
   , Node.URI
