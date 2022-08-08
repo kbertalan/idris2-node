@@ -2,6 +2,7 @@ package node
 
 modules = Node
   , Node.Error
+  , Node.Event.Internal
   , Node.FS
   , Node.FS.ReadStream
   , Node.FS.Static
@@ -37,7 +38,6 @@ modules = Node
   , Node.Net.CreateServer
   , Node.Net.Server.Listen
   , Node.Stream
-  , Node.Stream.FFI
   , Node.Stream.Writeable
   , Node.Stream.Readable
   , Node.TLS.CreateSecureContext
