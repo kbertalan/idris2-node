@@ -1,6 +1,7 @@
 module Node.HTTP2.ClientHttp2Session
 
 import Node.Error
+import Node.Event.Internal
 import Node.HTTP2.ClientHttp2Stream
 import Node.HTTP2.Headers
 
@@ -33,21 +34,17 @@ export
 (.close) : HasIO io => ClientHttp2Session -> io ()
 (.close) session = primIO $ ffi_close session
 
-%foreign """
-  node:lambda:
-  (session, handler) =>
-    session.on('stream', (pushedStream, requestHeaders) => handler(pushedStream)(requestHeaders)())
-  """
-ffi_onStream : ClientHttp2Session -> (ClientHttp2Stream -> Headers -> PrimIO ()) -> PrimIO ()
+%foreign nodeOn2 "stream"
+ffi_onStream : a -> (b -> c -> PrimIO ()) -> PrimIO ()
 
 export
 (.onStream) : HasIO io => ClientHttp2Session -> (ClientHttp2Stream -> Headers -> IO ()) -> io ()
-(.onStream) session handler = primIO $ ffi_onStream session $ \stream, headers => toPrim $ handler stream headers
+(.onStream) = on2 ffi_onStream
 
-%foreign "node:lambda: (session, error) => session.on('error', e => error(e)())"
-ffi_onError : ClientHttp2Session -> (NodeError -> PrimIO ()) -> PrimIO ()
+%foreign nodeOn1 "error"
+ffi_onError : a -> (b -> PrimIO ()) -> PrimIO ()
 
 export
 (.onError) : HasIO io => ClientHttp2Session -> (NodeError -> IO ()) -> io ()
-(.onError) session cb = primIO $ ffi_onError session $ \e => toPrim $ cb e
+(.onError) = on1 ffi_onError
 

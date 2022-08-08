@@ -1,5 +1,6 @@
 module Node.HTTP.Server
 
+import Node.Event.Internal
 import Node.HTTP.IncomingMessage
 import Node.HTTP.ServerResponse
 import Node.HTTP.Type
@@ -8,15 +9,12 @@ import Node.Net.Server.Listen
 export
 data Server : Type where [external]
 
-%foreign "node:lambda: (server, handler) => server.on('request', (req, res) => handler(req)(res)())"
-ffi_onRequest : Server -> (IncomingMessage -> ServerResponse -> PrimIO ()) -> PrimIO ()
+%foreign nodeOn2 "request"
+ffi_onRequest : a -> (b -> c -> PrimIO ()) -> PrimIO ()
 
 export
 (.onRequest) : HasIO io => Server -> (IncomingMessage -> ServerResponse -> IO()) -> io ()
-(.onRequest) server callback = 
-  let primCallback = \req => \res => toPrim $ callback req res
-  in primIO $ ffi_onRequest server primCallback
-
+(.onRequest) = on2 ffi_onRequest
 
 %foreign "node:lambda: (server, options) => server.listen(options)"
 ffi_listen : Server -> Listen.NodeOptions -> PrimIO ()

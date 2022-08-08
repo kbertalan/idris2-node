@@ -10,14 +10,14 @@ export
 readableOnClose : HasIO io => a -> IO () -> io ()
 readableOnClose = on0 ffi_onClose
 
-%foreign "node:lambda: (tya, tyd, reader, callback) => reader.on('data', chunk => callback(chunk)())"
-ffi_onData : a -> (d -> PrimIO ()) -> PrimIO ()
+%foreign nodeOn1 "data"
+ffi_onData : a -> (b -> PrimIO ()) -> PrimIO ()
 
 export
 readableOnData : HasIO io => a -> (d -> IO ()) -> io ()
 readableOnData = on1 ffi_onData
 
-%foreign "node:lambda: (tya, reader, callback) => reader.on('end', callback)"
+%foreign nodeOn0 "end"
 ffi_onEnd : a -> PrimIO () -> PrimIO ()
 
 export
@@ -31,14 +31,14 @@ export
 readableOnError : HasIO io => a -> (e -> IO ()) -> io ()
 readableOnError = on1 ffi_onError
 
-%foreign "node:lambda: (tya, reader, callback) => reader.on('pause', callback)"
+%foreign nodeOn0 "pause"
 ffi_onPause : a -> PrimIO () -> PrimIO ()
 
 export
 readableOnPause : HasIO io => a -> IO () -> io ()
 readableOnPause = on0 ffi_onPause
 
-%foreign "node:lambda: (tya, reader, callback) => reader.on('resume', callback)"
+%foreign nodeOn0 "resume"
 ffi_onResume : a -> PrimIO () -> PrimIO ()
 
 export
