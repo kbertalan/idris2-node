@@ -3,24 +3,45 @@ package node
 modules = Node
   , Node.Error
   , Node.FS
+  , Node.FS.ReadStream
+  , Node.FS.Static
   , Node.FS.Stats
-  , Node.FS.Stream
-  , Node.Headers
+  , Node.FS.Type
   , Node.HTTP
-  , Node.HTTP.Client
+  , Node.HTTP.Agent
+  , Node.HTTP.ClientRequest
+  , Node.HTTP.CreateServer
+  , Node.HTTP.Headers
+  , Node.HTTP.IncomingMessage
   , Node.HTTP.Server
+  , Node.HTTP.ServerResponse
+  , Node.HTTP.Static
+  , Node.HTTP.Type
   , Node.HTTPS
+  , Node.HTTPS.CreateServer
   , Node.HTTPS.Server
+  , Node.HTTPS.Static
+  , Node.HTTPS.Type
   , Node.HTTP2
-  , Node.HTTP2.Client
-  , Node.HTTP2.Server
-  , Node.Net.Server
+  , Node.HTTP2.Connect
+  , Node.HTTP2.ClientHttp2Session
+  , Node.HTTP2.ClientHttp2Stream
+  , Node.HTTP2.CreateSecureServer
+  , Node.HTTP2.CreateServer
+  , Node.HTTP2.Headers
+  , Node.HTTP2.Http2Server
+  , Node.HTTP2.ServerHttp2Stream
+  , Node.HTTP2.Static
+  , Node.HTTP2.Type
+  , Node.Net
+  , Node.Net.CreateServer
+  , Node.Net.Server.Listen
   , Node.Stream
   , Node.Stream.FFI
   , Node.Stream.Writeable
   , Node.Stream.Readable
-  , Node.TLS.Context
-  , Node.TLS.Server
+  , Node.TLS.CreateSecureContext
+  , Node.TLS.CreateServer
   , Node.URI
   , Data.Buffer.Ext
 

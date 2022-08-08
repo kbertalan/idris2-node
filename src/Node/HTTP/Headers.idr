@@ -1,6 +1,4 @@
-module Node.Headers
-
-import Node
+module Node.HTTP.Headers
 
 export
 data Headers : Type where [external]

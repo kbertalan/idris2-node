@@ -1,4 +1,4 @@
-module Node.TLS.Server
+module Node.TLS.CreateServer
 
 import Data.Buffer.Ext
 import Data.Maybe
@@ -19,7 +19,7 @@ record Options where
   pskIdentityHint: Maybe String
 
 export
-defaultOptions : TLS.Server.Options
+defaultOptions : Options
 defaultOptions = MkOptions
   { clientCertEngine = Nothing
   , enableTrace = False
@@ -32,7 +32,7 @@ defaultOptions = MkOptions
   }
 
 export
-data NodeTLSServerOptions : Type where [external]
+data NodeOptions : Type where [external]
 
 %foreign """
   node:lambda:
@@ -64,10 +64,10 @@ ffi_convertOptions :
   (sessionTimeout: Int) ->
   (ticketKeys: Buffer) ->
   (pskIdentityHint: String) ->
-  NodeTLSServerOptions
+  NodeOptions
 
 export
-convertOptions : TLS.Server.Options -> NodeTLSServerOptions
+convertOptions : Options -> NodeOptions
 convertOptions o = ffi_convertOptions
   (fromMaybe "" o.clientCertEngine)
   (if o.enableTrace then 1 else 0)

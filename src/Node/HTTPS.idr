@@ -1,7 +1,9 @@
 module Node.HTTPS
 
-export
-data HTTPS : Type where [external]
+import public Node.HTTPS.CreateServer
+import public Node.HTTPS.Server
+import public Node.HTTPS.Static
+import public Node.HTTPS.Type
 
 %foreign "node:lambda: () => require('https')"
 ffi_require : () -> PrimIO HTTPS

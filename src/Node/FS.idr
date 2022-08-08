@@ -1,7 +1,9 @@
 module Node.FS
 
-export
-data FS : Type where [external]
+import public Node.FS.ReadStream
+import public Node.FS.Static
+import public Node.FS.Stats
+import public Node.FS.Type
 
 %foreign "node:lambda: () => require('fs')"
 ffi_require : PrimIO FS

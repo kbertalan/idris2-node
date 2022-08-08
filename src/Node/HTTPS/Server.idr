@@ -1,43 +1,13 @@
 module Node.HTTPS.Server
 
-import public Node.HTTPS
-import public Node.Headers
-import public Node.TLS.Context
-import public Node.TLS.Server
-import public Node.Net.Server
-
-import Data.Buffer.Ext
 import Node.Error
-import Node.HTTP.Server
+import Node.HTTP
+import public Node.Net.Server.Listen
 
 %hide Node.HTTP.Server.Server
 
-public export
-Options : Type
-Options = Node.HTTP.Server.Options
-
-public export
-defaultOptions : HTTPS.Server.Options
-defaultOptions = Node.HTTP.Server.defaultOptions
-
 export
 data Server : Type where [external]
-
-%foreign """
-  node:lambda:
-  (https, netServerOptions, tlsServerOptions, tlsContextOptions, secureServerOptions) =>
-    https.createServer({
-      ...netServerOptions,
-      ...tlsServerOptions,
-      ...tlsContextOptions,
-      ...secureServerOptions
-    })
-  """
-ffi_createServer : HTTPS -> NodeServerOptions -> NodeTLSServerOptions -> NodeTLSSecureContextOptions -> NodeHTTPServerOptions -> PrimIO Server
-
-export
-(.createServer) : HasIO io => HTTPS -> Net.Server.Options -> TLS.Server.Options -> TLS.Context.Options -> HTTPS.Server.Options -> io Server
-(.createServer) https netServerOptions tlsServerOptions tlsContextOptions httpsOptions = primIO $ ffi_createServer https (convertOptions netServerOptions) (convertOptions tlsServerOptions) (convertOptions tlsContextOptions) (convertOptions httpsOptions)
 
 %foreign "node:lambda: (server, handler) => server.on('request', (req, res) => handler(req)(res)())"
 ffi_onRequest : Server -> (IncomingMessage -> ServerResponse -> PrimIO ()) -> PrimIO ()
@@ -50,7 +20,7 @@ export
 
 
 %foreign "node:lambda: (server, options) => server.listen(options)"
-ffi_listen : Server -> NodeListenOptions -> PrimIO ()
+ffi_listen : Server -> Listen.NodeOptions -> PrimIO ()
 
 export
 (.listen) : HasIO io => Server -> Listen.Options -> io ()
