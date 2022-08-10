@@ -61,7 +61,7 @@ readableResume a = primIO $ ffi_resume a
 
 ||| Readable stream in flowing mode
 public export
-interface Readable d r | r where
+interface Readable d e r | r where
   (.onClose) : HasIO io => r -> IO () -> io ()
   (.onClose) = readableOnClose
   (.onData) : HasIO io => r -> (d -> IO ()) -> io ()

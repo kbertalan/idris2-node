@@ -1,7 +1,7 @@
 module Node.HTTP2.ServerHttp2Stream
 
 import Data.Buffer
-import Node.Error
+import public Node.Error
 import public Node.HTTP2.Headers
 import public Node.Stream
 
@@ -9,10 +9,10 @@ export
 data ServerHttp2Stream : Type where [external]
 
 public export
-implementation Readable Buffer ServerHttp2Stream where
+implementation Readable Buffer NodeError ServerHttp2Stream where
 
 public export
-implementation Writeable Buffer ServerHttp2Stream where
+implementation Writeable Buffer NodeError ServerHttp2Stream where
 
 %foreign "node:lambda: (stream, headers) => stream.respond(headers)"
 ffi_respond : ServerHttp2Stream -> Headers -> PrimIO ()

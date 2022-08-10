@@ -3,7 +3,10 @@ module Main
 import Test.Golden
 
 node : TestPool
-node = MkTestPool "Node tests" [] (Just Node) [ "node/uri" ]
+node = MkTestPool "Node tests" [] (Just Node)
+  [ "node/uri"
+  , "node/fs"
+  ]
 
 ext : TestPool
 ext = MkTestPool "Extensions" [] Nothing [ "ext/buffer" ]

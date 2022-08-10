@@ -1,6 +1,7 @@
 module Node.HTTP.IncomingMessage
 
-import Data.Buffer
+import public Data.Buffer
+import public Node.Error
 import Node.HTTP.Headers
 import public Node.Stream
 
@@ -8,7 +9,7 @@ export
 data IncomingMessage : Type where [external]
 
 public export
-implementation Readable Buffer IncomingMessage where
+implementation Readable Buffer NodeError IncomingMessage where
 
 export
 %foreign "node:lambda: req => req.headers"

@@ -1,11 +1,12 @@
 module Node.FS.ReadStream
 
 import Data.Buffer
-import Node.Stream
+import public Node.Error
+import public Node.Stream
 
 export
 data ReadStream : Type where [external]
 
 export
-implementation Readable Buffer ReadStream where
+implementation Readable Buffer NodeError ReadStream where
 

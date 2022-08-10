@@ -9,8 +9,8 @@ import Node.FS.Type
 ffi_createReadStream : FS -> String -> PrimIO ReadStream
 
 export
-createReadStream : HasIO io => { auto fs : FS } -> String -> io ReadStream
-createReadStream path = primIO $ ffi_createReadStream fs path
+(.createReadStream) : HasIO io => (fs : FS) -> String -> io ReadStream
+(.createReadStream) fs path = primIO $ ffi_createReadStream fs path
 
 %foreign """
   node:lambda:
@@ -33,11 +33,11 @@ createReadStream path = primIO $ ffi_createReadStream fs path
     }
   }
   """
-ffi_stat_sync : FS -> (r: StatsReturnType) -> String -> PrimIO (Either NodeError $ Stats r)
+ffi_statSync : FS -> (r: StatsReturnType) -> String -> PrimIO (Either NodeError $ Stats r)
 
 export
-stat_sync : HasIO io => {auto fs : FS} -> (r : StatsReturnType) -> String -> io (Either NodeError $ Stats r)
-stat_sync r path = primIO $ ffi_stat_sync fs r path
+(.statSync) : HasIO io => (fs : FS) -> (r : StatsReturnType) -> String -> io (Either NodeError $ Stats r)
+(.statSync) fs r path = primIO $ ffi_statSync fs r path
 
 %foreign """
   node:lambda:
@@ -62,6 +62,6 @@ stat_sync r path = primIO $ ffi_stat_sync fs r path
 ffi_stat : FS -> (r: StatsReturnType) -> String -> (Either NodeError (Stats r) -> PrimIO()) -> PrimIO ()
 
 export
-stat : HasIO io => {auto fs : FS} -> (r: StatsReturnType) -> String -> (Either NodeError (Stats r) -> IO ()) -> io ()
-stat r path cb = primIO $ ffi_stat fs r path $ \either => toPrim $ cb either
+(.stat) : HasIO io => (fs : FS) -> (r: StatsReturnType) -> String -> (Either NodeError (Stats r) -> IO ()) -> io ()
+(.stat) fs r path cb = primIO $ ffi_stat fs r path $ \either => toPrim $ cb either
 

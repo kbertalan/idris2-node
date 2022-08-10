@@ -1,0 +1,16 @@
+1/1: Building FS (FS.idr)
+run paused
+run resumed
+run data: rm -rf build
+run data: 
+run data: $1 --build test.ipkg
+run data: node build/exec/test
+run data: 
+run data: 
+
+run ended
+run closed
+not-exists paused
+not-exists resumed
+not-exists error: ENOENT: no such file or directory, open 'not-exists'
+not-exists closed

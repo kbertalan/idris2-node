@@ -1,7 +1,6 @@
 module Node.FS.Stats
 
 import Node.FS.Type
-import Node.Error
 
 public export
 data StatsReturnType
