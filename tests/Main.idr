@@ -6,6 +6,7 @@ node : TestPool
 node = MkTestPool "Node tests" [] (Just Node)
   [ "node/uri"
   , "node/fs"
+  , "node/http"
   ]
 
 ext : TestPool
