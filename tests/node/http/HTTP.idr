@@ -18,7 +18,7 @@ main = do
     req.onData $ \d => res.write d Nothing
     req.onClose $ res.end Nothing
 
-  req <- http.post "http://localhost:\{show port}/something" $ \res => do
+  req <- http.post "http://localhost:\{show port}/something" defaultRequestOptions $ \res => do
     putStrLn "HTTP POST:"
     res.onData $ putStrLn . show
     res.onClose server.close

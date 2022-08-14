@@ -3,25 +3,30 @@ module Node.HTTP.Static
 import Node.HTTP.CreateServer
 import Node.HTTP.ClientRequest
 import Node.HTTP.IncomingMessage
+import public Node.HTTP.Request
 import Node.HTTP.Server
 import Node.HTTP.Type
 
-%foreign "node:lambda: (http, url, cb) => http.get(url, (res) => { cb(res)() })"
-ffi_get : HTTP -> String -> (IncomingMessage -> PrimIO ()) -> PrimIO ClientRequest
+%foreign "node:lambda: (http, url, opts, cb) => http.get(url, opts, (res) => { cb(res)() })"
+ffi_get : HTTP -> String -> Request.NodeRequestOptions -> (IncomingMessage -> PrimIO ()) -> PrimIO ClientRequest
 
 export
-(.get) : HasIO io => HTTP -> String -> (IncomingMessage -> IO ()) -> io ClientRequest
-(.get) http url cb = primIO $ ffi_get http url $ \res => toPrim $ cb res
+(.get) : HasIO io => HTTP -> String -> Request.RequestOptions -> (IncomingMessage -> IO ()) -> io ClientRequest
+(.get) http url opts cb = primIO $ ffi_get http url (convertRequestOptions opts) $ \res => toPrim $ cb res
 
-%foreign "node:lambda: (http, url, cb) => http.request(url, {method: 'POST'}, (res) => { cb(res)() })"
-ffi_post : HTTP -> String -> (IncomingMessage -> PrimIO ()) -> PrimIO ClientRequest
+%foreign "node:lambda: (http, url, opts, cb) => http.request(url, opts, (res) => { cb(res)() })"
+ffi_request : HTTP -> String -> Request.NodeRequestOptions -> (IncomingMessage -> PrimIO ()) -> PrimIO ClientRequest
 
 export
-(.post) : HasIO io => HTTP -> String -> (IncomingMessage -> IO ()) -> io ClientRequest
-(.post) http url cb = primIO $ ffi_post http url $ \res => toPrim $ cb res
+(.request) : HasIO io => HTTP -> String -> Request.RequestOptions -> (IncomingMessage -> IO ()) -> io ClientRequest
+(.request) http url opts cb = primIO $ ffi_request http url (convertRequestOptions opts) $ \res => toPrim $ cb res
+
+export
+(.post) : HasIO io => HTTP -> String -> Request.RequestOptions -> (IncomingMessage -> IO ()) -> io ClientRequest
+(.post) http url opts cb = http.request url ({ requestOptions.method := "POST" } opts) cb
 
 %foreign "node:lambda: (http, options) => http.createServer(options)"
-ffi_createServer : HTTP -> NodeOptions -> PrimIO Server
+ffi_createServer : HTTP -> CreateServer.NodeOptions -> PrimIO Server
 
 export
 (.createServer) : HasIO io => HTTP -> Options -> io Server

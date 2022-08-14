@@ -2,10 +2,9 @@ module Node.HTTPS.Server
 
 import Node.Error
 import Node.Event.Internal
-import Node.HTTP
+import public Node.HTTP.IncomingMessage
+import public Node.HTTP.ServerResponse
 import public Node.Net.Server.Listen
-
-%hide Node.HTTP.Server.Server
 
 export
 data Server : Type where [external]

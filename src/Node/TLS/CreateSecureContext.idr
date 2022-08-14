@@ -80,29 +80,33 @@ data NodeOptions : Type where [external]
   , sessionIdContext
   , ticketKeys
   , sessionTimeout
-  ) => ({
-    ca: __prim_idris2js_array(ca),
-    cert: __prim_idris2js_array(cert),
-    sigalgs: sigalgs.length > 0 ? __prim_idris2js_array(sigalgs).join(',') : undefined,
-    ciphers: ciphers || undefined,
-    clientCertEngine: clientCertEngine || undefined,
-    crl: __prim_idris2js_array(crl),
-    dhparam: dhparam || undefined,
-    ecdhCurve: ecdhCurve || undefined,
-    honorCipherOrder: honorCipherOrder == -1 ? undefined : honorCipherOrder != 0,
-    key: __prim_idris2js_array(key),
-    privateKeyEngine: privateKeyEngine || undefined,
-    privateKeyIdentifier: privateKeyIdentifier || undefined,
-    maxVersion: maxVersion || undefined,
-    minVersion: minVersion || undefined,
-    passphrase: passphrase || undefined,
-    pfx: __prim_idris2js_array(pfx),
-    secureOptions: secureOptions != -1 ? secureOptions : undefined,
-    secureProtocol: secureProtocol || undefined,
-    sessionIdContext: sessionIdContext || undefined,
-    ticketKeys: ticketKeys.length != 0 ? ticketKeys : undefined,
-    sessionTimeout
-  })
+  ) => {
+    const opts = {
+      ca: __prim_idris2js_array(ca),
+      cert: __prim_idris2js_array(cert),
+      sigalgs: sigalgs.length > 0 ? __prim_idris2js_array(sigalgs).join(',') : undefined,
+      ciphers: ciphers || undefined,
+      clientCertEngine: clientCertEngine || undefined,
+      crl: __prim_idris2js_array(crl),
+      dhparam: dhparam || undefined,
+      ecdhCurve: ecdhCurve || undefined,
+      honorCipherOrder: honorCipherOrder == -1 ? undefined : honorCipherOrder != 0,
+      key: __prim_idris2js_array(key),
+      privateKeyEngine: privateKeyEngine || undefined,
+      privateKeyIdentifier: privateKeyIdentifier || undefined,
+      maxVersion: maxVersion || undefined,
+      minVersion: minVersion || undefined,
+      passphrase: passphrase || undefined,
+      pfx: __prim_idris2js_array(pfx),
+      secureOptions: secureOptions != -1 ? secureOptions : undefined,
+      secureProtocol: secureProtocol || undefined,
+      sessionIdContext: sessionIdContext || undefined,
+      ticketKeys: ticketKeys.length != 0 ? ticketKeys : undefined,
+      sessionTimeout
+    }
+    Object.keys(opts).forEach(key => opts[key] === undefined && delete opts[key])
+    return opts
+  }
   """
 ffi_convertOptions:
   (ca: List String) ->

@@ -14,12 +14,14 @@ modules = Node
   , Node.HTTP.CreateServer
   , Node.HTTP.Headers
   , Node.HTTP.IncomingMessage
+  , Node.HTTP.Request
   , Node.HTTP.Server
   , Node.HTTP.ServerResponse
   , Node.HTTP.Static
   , Node.HTTP.Type
   , Node.HTTPS
   , Node.HTTPS.CreateServer
+  , Node.HTTPS.Request
   , Node.HTTPS.Server
   , Node.HTTPS.Static
   , Node.HTTPS.Type
@@ -37,9 +39,11 @@ modules = Node
   , Node.Net
   , Node.Net.CreateServer
   , Node.Net.Server.Listen
+  , Node.Net.Socket.Connect
   , Node.Stream
   , Node.Stream.Writeable
   , Node.Stream.Readable
+  , Node.TLS.Connect
   , Node.TLS.CreateSecureContext
   , Node.TLS.CreateServer
   , Node.URI

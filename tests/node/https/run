@@ -1,0 +1,11 @@
+rm -rf build
+
+$1 --build test.ipkg
+mkdir -p ./build/certs
+openssl genrsa 2048 > ./build/certs/ca-key.pem
+openssl req -new -x509 -nodes -days 365000 -key ./build/certs/ca-key.pem -out ./build/certs/ca-cert.pem -subj "/CN=example.com"
+openssl req -newkey rsa:2048 -nodes -days 365000 -keyout ./build/certs/key.pem -out ./build/certs/server-req.pem -subj "/CN=example.com/"
+openssl x509 -req -days 365000 -set_serial 01 -in ./build/certs/server-req.pem -out ./build/certs/cert.pem -CA ./build/certs/ca-cert.pem -CAkey ./build/certs/ca-key.pem
+node build/exec/test
+
+
