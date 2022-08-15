@@ -1,6 +1,5 @@
 module Node.HTTP2.CreateSecureServer
 
-import Data.Maybe
 import Node.HTTP2.CreateServer
 import Node.HTTP2.Type
 
@@ -63,31 +62,37 @@ data NodeOptions : Type where [external]
   , settings
   , origins
   , unknownProtocolTimeout
-  ) => ({
-    allowHTTP1: allowHTTP1 != 0,
-    maxDeflateDynamicTableSize,
-    maxSettings,
-    maxSessionMemory,
-    maxHeaderListPairs,
-    maxOutstandingPings,
-    maxSendHeaderBlockLength: maxSendHeaderBlockLength != -1 ? maxSendHeaderBlockLength : undefined,
-    paddingStrategy,
-    peerMaxConcurrentStreams,
-    maxSessionInvalidFrames,
-    maxSessionRejectedStreams,
-    settings,
-    origins: __prim_idris2js_array(origins),
-    unknownProtocolTimeout
-  })
+  ) => {
+    const maybe = ({h, a1}) => h === undefined ? a1 : undefined
+    const bool = (b) => b != 0
+    const opts = {
+      allowHTTP1: bool(allowHTTP1),
+      maxDeflateDynamicTableSize,
+      maxSettings,
+      maxSessionMemory,
+      maxHeaderListPairs,
+      maxOutstandingPings,
+      maxSendHeaderBlockLength: maybe(maxSendHeaderBlockLength),
+      paddingStrategy,
+      peerMaxConcurrentStreams,
+      maxSessionInvalidFrames,
+      maxSessionRejectedStreams,
+      settings,
+      origins: __prim_idris2js_array(origins),
+      unknownProtocolTimeout
+    }
+    Object.keys(opts).forEach(key => opts[key] === undefined && delete opts[key])
+    return opts
+  }
   """
 ffi_convertOptions :
-  (allowHTTP1: Int) ->
+  (allowHTTP1: Bool) ->
   (maxDeflateDynamicTableSize: Int) ->
   (maxSettings: Int) ->
   (maxSessionMemory: Int) ->
   (maxHeaderListPairs: Int) ->
   (maxOutstandingPings: Int) ->
-  (maxSendHeaderBlockLength: Int) ->
+  (maxSendHeaderBlockLength: Maybe Int) ->
   (paddingStrategy: NodePaddingStrategy) ->
   (peerMaxConcurrentStreams: Int) ->
   (maxSessionInvalidFrames: Int) ->
@@ -100,13 +105,13 @@ ffi_convertOptions :
 export
 convertOptions : {auto http2 : HTTP2} -> Options -> NodeOptions
 convertOptions o = ffi_convertOptions
-  (if o.allowHTTP1 then 1 else 0)
+  o.allowHTTP1
   o.maxDeflateDynamicTableSize
   o.maxSettings
   o.maxSessionMemory
   o.maxHeaderListPairs
   o.maxOutstandingPings
-  (fromMaybe (-1) o.maxSendHeaderBlockLength)
+  o.maxSendHeaderBlockLength
   (convertPaddingStrategy o.paddingStrategy)
   o.peerMaxConcurrentStreams
   o.maxSessionInvalidFrames

@@ -47,17 +47,21 @@ data NodeAgentOptions : Type where [external]
     maxTotalSockets
     maxFreeSockets
     scheduling
-  ) => ({
-    keepAlive: keepAlive != 0,
-    keepAliveMsecs,
-    maxSockets,
-    maxTotalSockets,
-    maxFreeSockets,
-    scheduling
-  })
+  ) => {
+    const bool = (b) => b = 0
+    const opts = {
+      keepAlive: bool(keepAlive),
+      keepAliveMsecs,
+      maxSockets,
+      maxTotalSockets,
+      maxFreeSockets,
+      scheduling
+    }
+    return opts
+  }
   """
 ffi_nodeAgentOptions :
-  (keepAlive : Int) ->
+  (keepAlive : Bool) ->
   (keepAliveMsecs : Int) ->
   (maxSockets : Int) ->
   (maxTotalSockets : Int) ->
@@ -70,11 +74,11 @@ ffi_newAgent : NodeAgentOptions -> Agent
 
 export
 newAgent : AgentOptions -> Agent
-newAgent opts = ffi_newAgent $ ffi_nodeAgentOptions
-  (if opts.keepAlive then 1 else 0)
-  opts.keepAliveMsecs
-  opts.maxSockets
-  opts.maxTotalSockets
-  opts.maxFreeSockets
-  (show opts.scheduling)
+newAgent o = ffi_newAgent $ ffi_nodeAgentOptions
+  o.keepAlive
+  o.keepAliveMsecs
+  o.maxSockets
+  o.maxTotalSockets
+  o.maxFreeSockets
+  (show o.scheduling)
 

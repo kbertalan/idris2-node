@@ -6,7 +6,7 @@ public export
 record Options where
   constructor MkOptions
   enableTrace: Maybe Bool
-  host: String
+  host: Maybe String
   port: Maybe Int
   path: Maybe String
   -- TODO: socket
@@ -26,7 +26,7 @@ export
 defaultOptions : Options
 defaultOptions = MkOptions
   { enableTrace = Nothing
-  , host = "localhost"
+  , host = Nothing
   , port = Nothing
   , path = Nothing
   , allowHalfOpen = False
@@ -54,13 +54,14 @@ data NodeOptions : Type where [external]
   , highWaterMark
   ) => {
     const maybe = ({h, a1}) => h === undefined ? a1 : undefined
+    const bool = (b) => b != 0
     const opts = {
       enableTrace: maybe(enableTrace),
-      host,
+      host: maybe(host),
       port: maybe(port),
       path: maybe(path),
-      allowHalfOpen: allowHalfOpen != 0,
-      rejectUnauthorized: rejectUnauthorized != 0,
+      allowHalfOpen: bool(allowHalfOpen),
+      rejectUnauthorized: bool(rejectUnauthorized),
       servername: maybe(servername),
       session: maybe(session),
       minDHSize: maybe(minDHSize),
@@ -72,7 +73,7 @@ data NodeOptions : Type where [external]
   """
 ffi_convertOptions:
   (enableTrace: Maybe Bool)
-  -> (host: String)
+  -> (host: Maybe String)
   -> (port: Maybe Int)
   -> (path: Maybe String)
   -> (allowHalfOpen: Bool)

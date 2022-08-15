@@ -70,7 +70,7 @@ data NodeOptions : Type where [external]
   , keepAliveInitialDelay
   ) => {
     const maybe = ({h, a1}) => h === undefined ? a1 : undefined
-    return {
+    const opts = {
       port,
       host: maybe(host),
       localAddress: maybe(localAddress),
@@ -80,6 +80,9 @@ data NodeOptions : Type where [external]
       keepAlive,
       keepAliveInitialDelay
     }
+
+    Object.key(opts).forEach(key => opts[key] === undefined && delete opts[key])
+    return opts
   }
   """
 ffi_convertTCPOptions :

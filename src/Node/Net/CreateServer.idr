@@ -1,7 +1,5 @@
 module Node.Net.CreateServer
 
-import Data.Maybe
-
 public export
 record Options where
   constructor MkOptions
@@ -31,28 +29,31 @@ data NodeOptions : Type where [external]
   , noDelay
   , keepAlive
   , keepAliveInitialDelay
-  ) => ({
-    allowHalfOpen: allowHalfOpen != 0,
-    pauseOnConnect: pauseOnConnect != 0,
-    noDelay: noDelay != 0,
-    keepAlive: keepAlive != 0,
-    keepAliveInitialDelay
-  })
+  ) => {
+    const bool = (b) => b != 0
+    return {
+      allowHalfOpen: bool(allowHalfOpen),
+      pauseOnConnect: bool(pauseOnConnect),
+      noDelay: bool(noDelay),
+      keepAlive: bool(keepAlive),
+      keepAliveInitialDelay
+    }
+  }
   """
 ffi_convertOptions :
-  (allowHalfOpen : Int) ->
-  (pauseOnConnect : Int) ->
-  (noDelay : Int) ->
-  (keepAlive : Int) ->
+  (allowHalfOpen : Bool) ->
+  (pauseOnConnect : Bool) ->
+  (noDelay : Bool) ->
+  (keepAlive : Bool) ->
   (keepAliveInitialDelay : Int) ->
   CreateServer.NodeOptions
 
 export
 convertOptions : CreateServer.Options -> CreateServer.NodeOptions
 convertOptions o = ffi_convertOptions
-  (if o.allowHalfOpen then 1 else 0)
-  (if o.pauseOnConnect then 1 else 0)
-  (if o.noDelay then 1 else 0)
-  (if o.keepAlive then 1 else 0)
+  o.allowHalfOpen
+  o.pauseOnConnect
+  o.noDelay
+  o.keepAlive
   o.keepAliveInitialDelay
 

@@ -1,6 +1,5 @@
 module Node.HTTP.Request
 
-import Data.Maybe
 import Node.HTTP.Agent
 import public Node.HTTP.Headers
 import Node.Net.Socket.Connect
@@ -78,6 +77,7 @@ data NodeRequestOptions : Type where [external]
   , timeout
   ) => {
     const maybe = ({h, a1}) => h === undefined ? a1 : undefined
+    const bool = (b) => b != 0
     const opts = {
       agent: maybe(agent),
       auth: maybe(auth),
@@ -85,7 +85,7 @@ data NodeRequestOptions : Type where [external]
       family,
       headers: maybe(headers),
       hostname: maybe(hostname),
-      insecureHTTPParser: insecureHTTPParser != 0,
+      insecureHTTPParser: bool(insecureHTTPParser),
       localAddress: maybe(localAddress),
       localPort: maybe(localPort),
       maxHeaderSize: maybe(maxHeaderSize),
@@ -93,7 +93,7 @@ data NodeRequestOptions : Type where [external]
       path: maybe(path),
       port: maybe(port),
       protocol,
-      setHost: setHost != 0,
+      setHost: bool(setHost),
       socketPath: maybe(socketPath),
       timeout: maybe(timeout)
     }

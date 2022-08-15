@@ -23,10 +23,10 @@ data NodeOptions : Type where [external]
     rejectUnauthorized: rejectUnauthorized != 0
   })
   """
-ffi_nodeConnectOptions : String -> Int -> NodeOptions
+ffi_nodeConnectOptions : String -> Bool -> NodeOptions
 
 export
 convertOptions : Connect.Options -> NodeOptions
 convertOptions (MkOptions ca rejectUnauthorized)
-  = ffi_nodeConnectOptions ca
-      (if rejectUnauthorized then 1 else 0)
+  = ffi_nodeConnectOptions ca rejectUnauthorized
+

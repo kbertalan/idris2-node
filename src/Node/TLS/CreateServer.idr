@@ -1,7 +1,6 @@
 module Node.TLS.CreateServer
 
 import Data.Buffer.Ext
-import Data.Maybe
 
 public export
 record Options where
@@ -44,36 +43,42 @@ data NodeOptions : Type where [external]
   , sessionTimeout
   , ticketKeys
   , pskIdentityHint
-  ) => ({
-    clientCertEngine: clientCertEngine || undefined,
-    enableTrace: enableTrace != 0,
-    handshakeTimeout,
-    rejectUnauthorized: rejectUnauthorized != 0,
-    requestCert: requestCert != 0,
-    sessionTimeout,
-    ticketKeys: ticketKeys.length ? ticketKeys : undefined,
-    pskIdentityHint: pskIdentityHint || undefined
-  })
+  ) => {
+    const maybe = ({h, a1}) => h === undefined ? a1 : undefined
+    const bool = (b) => b != 0
+    const opts = {
+      clientCertEngine: maybe(clientCertEngine),
+      enableTrace: bool(enableTrace),
+      handshakeTimeout,
+      rejectUnauthorized: bool(rejectUnauthorized),
+      requestCert: bool(requestCert),
+      sessionTimeout,
+      ticketKeys: maybe(ticketKeys),
+      pskIdentityHint: maybe(pskIdentityHint)
+    }
+    Object.keys(opts).forEach(key => opts[key] === undefined && delete opts[key])
+    return opts
+  }
   """
 ffi_convertOptions : 
-  (clientCertEngine: String) ->
-  (enableTrace: Int) ->
+  (clientCertEngine: Maybe String) ->
+  (enableTrace: Bool) ->
   (handshakeTimeout: Int) ->
-  (rejectUnauthorized: Int) ->
-  (requestCert: Int) ->
+  (rejectUnauthorized: Bool) ->
+  (requestCert: Bool) ->
   (sessionTimeout: Int) ->
-  (ticketKeys: Buffer) ->
-  (pskIdentityHint: String) ->
+  (ticketKeys: Maybe Buffer) ->
+  (pskIdentityHint: Maybe String) ->
   NodeOptions
 
 export
 convertOptions : Options -> NodeOptions
 convertOptions o = ffi_convertOptions
-  (fromMaybe "" o.clientCertEngine)
-  (if o.enableTrace then 1 else 0)
+  o.clientCertEngine
+  o.enableTrace
   o.handshakeTimeout
-  (if o.rejectUnauthorized then 1 else 0)
-  (if o.requestCert then 1 else 0)
+  o.rejectUnauthorized
+  o.requestCert
   o.sessionTimeout
-  (fromMaybe (fromString "") o.ticketKeys)
-  (fromMaybe "" o.pskIdentityHint)
+  o.ticketKeys
+  o.pskIdentityHint

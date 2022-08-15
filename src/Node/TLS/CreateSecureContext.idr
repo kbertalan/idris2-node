@@ -1,7 +1,6 @@
 module Node.TLS.CreateSecureContext
 
 import Data.Buffer.Ext
-import Data.Maybe
 
 public export
 record Options where
@@ -81,27 +80,29 @@ data NodeOptions : Type where [external]
   , ticketKeys
   , sessionTimeout
   ) => {
+    const maybe = ({h, a1}) => h === undefined ? a1 : undefined
+    const bool = (b) => b === undefined ? undefined : b != 0
     const opts = {
       ca: __prim_idris2js_array(ca),
       cert: __prim_idris2js_array(cert),
       sigalgs: sigalgs.length > 0 ? __prim_idris2js_array(sigalgs).join(',') : undefined,
-      ciphers: ciphers || undefined,
-      clientCertEngine: clientCertEngine || undefined,
+      ciphers: maybe(ciphers),
+      clientCertEngine: maybe(clientCertEngine),
       crl: __prim_idris2js_array(crl),
-      dhparam: dhparam || undefined,
-      ecdhCurve: ecdhCurve || undefined,
-      honorCipherOrder: honorCipherOrder == -1 ? undefined : honorCipherOrder != 0,
+      dhparam: maybe(dhparam),
+      ecdhCurve: maybe(ecdhCurve),
+      honorCipherOrder: bool(maybe(honorCipherOrder)),
       key: __prim_idris2js_array(key),
-      privateKeyEngine: privateKeyEngine || undefined,
-      privateKeyIdentifier: privateKeyIdentifier || undefined,
-      maxVersion: maxVersion || undefined,
-      minVersion: minVersion || undefined,
-      passphrase: passphrase || undefined,
+      privateKeyEngine: maybe(privateKeyEngine),
+      privateKeyIdentifier: maybe(privateKeyIdentifier),
+      maxVersion: maybe(maxVersion),
+      minVersion: maybe(minVersion),
+      passphrase: maybe(passphrase),
       pfx: __prim_idris2js_array(pfx),
-      secureOptions: secureOptions != -1 ? secureOptions : undefined,
-      secureProtocol: secureProtocol || undefined,
-      sessionIdContext: sessionIdContext || undefined,
-      ticketKeys: ticketKeys.length != 0 ? ticketKeys : undefined,
+      secureOptions: maybe(secureOptions),
+      secureProtocol: maybe(secureProtocol),
+      sessionIdContext: maybe(sessionIdContext),
+      ticketKeys: maybe(ticketKeys),
       sessionTimeout
     }
     Object.keys(opts).forEach(key => opts[key] === undefined && delete opts[key])
@@ -112,23 +113,23 @@ ffi_convertOptions:
   (ca: List String) ->
   (cert: List String) ->
   (sigalgs: List String) ->
-  (ciphers: String) ->
-  (clientCertEngine: String) ->
+  (ciphers: Maybe String) ->
+  (clientCertEngine: Maybe String) ->
   (crl: List String) ->
-  (dhparam: String) ->
-  (ecdhCurve: String) ->
-  (honorCipherOrder: Int) ->
+  (dhparam: Maybe String) ->
+  (ecdhCurve: Maybe String) ->
+  (honorCipherOrder: Maybe Bool) ->
   (key: List String) ->
-  (privateKeyEngine: String) ->
-  (privateKeyIdentifier: String) ->
-  (maxVersion: String) ->
-  (minVersion: String) ->
-  (passphrase: String) ->
+  (privateKeyEngine: Maybe String) ->
+  (privateKeyIdentifier: Maybe String) ->
+  (maxVersion: Maybe String) ->
+  (minVersion: Maybe String) ->
+  (passphrase: Maybe String) ->
   (pfx: List String) ->
-  (secureOptions: Int) ->
-  (secureProtocol: String) ->
-  (sessionIdContext: String) ->
-  (ticketKeys: Buffer) ->
+  (secureOptions: Maybe Int) ->
+  (secureProtocol: Maybe String) ->
+  (sessionIdContext: Maybe String) ->
+  (ticketKeys: Maybe Buffer) ->
   (sessionTimeout: Int) ->
   NodeOptions
 
@@ -138,22 +139,22 @@ convertOptions o = ffi_convertOptions
   o.ca
   o.cert
   o.sigalgs
-  (fromMaybe "" o.ciphers)
-  (fromMaybe "" o.clientCertEngine)
+  o.ciphers
+  o.clientCertEngine
   o.crl
-  (fromMaybe "" o.dhparam)
-  (fromMaybe "" o.ecdhCurve)
-  (fromMaybe (-1) $ map (\b => if b then 1 else 0) o.honorCipherOrder)
+  o.dhparam
+  o.ecdhCurve
+  o.honorCipherOrder
   o.key
-  (fromMaybe "" o.privateKeyEngine)
-  (fromMaybe "" o.privateKeyIdentifier)
-  (fromMaybe "" o.maxVersion)
-  (fromMaybe "" o.minVersion)
-  (fromMaybe "" o.passphrase)
+  o.privateKeyEngine
+  o.privateKeyIdentifier
+  o.maxVersion
+  o.minVersion
+  o.passphrase
   o.pfx
-  (fromMaybe (-1) o.secureOptions)
-  (fromMaybe "" o.secureProtocol)
-  (fromMaybe "" o.sessionIdContext)
-  (fromMaybe (fromString "") o.ticketKeys)
+  o.secureOptions
+  o.secureProtocol
+  o.sessionIdContext
+  o.ticketKeys
   o.sessionTimeout
 

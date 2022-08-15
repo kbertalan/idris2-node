@@ -1,7 +1,5 @@
 module Node.Net.Server.Listen
 
-import Data.Maybe
-
 public export
 record Options where
   constructor MkOptions
@@ -41,32 +39,43 @@ data NodeOptions : Type where [external]
   , readableAll
   , writableAll
   , ipv6Only
-  ) => ({
-    port: port != -1 ? port : undefined,
-    host: host || undefined,
-    path: path || undefined,
-  })
+  ) => {
+    const maybe = ({h, a1}) => h === undefined ? a1 : undefined
+    const bool = (b) => b != 0
+    const opts = {
+      port: maybe(port),
+      host: maybe(host),
+      path: maybe(path),
+      backlog: maybe(backlog),
+      exclusive: bool(exclusive),
+      readableAll: bool(readableAll),
+      writableAll: bool(writableAll),
+      ipv6Only: bool(ipv6Only),
+    }
+    Object.keys(opts).forEach(key => opts[key] === undefined && delete opts[key])
+    return opts
+  }
   """
 ffi_convertOptions :
-  (port : Int) ->
-  (host : String) ->
-  (path : String) ->
-  (backlog : Int) ->
-  (exclusive : Int) ->
-  (readableAll : Int) ->
-  (writableAll : Int) ->
-  (ipv6Only : Int) ->
+  (port : Maybe Int) ->
+  (host : Maybe String) ->
+  (path : Maybe String) ->
+  (backlog : Maybe Int) ->
+  (exclusive : Bool) ->
+  (readableAll : Bool) ->
+  (writableAll : Bool) ->
+  (ipv6Only : Bool) ->
   NodeOptions
 
 export
 convertOptions : Options -> NodeOptions
 convertOptions o = ffi_convertOptions
-  (fromMaybe (-1) o.port)
-  (fromMaybe "" o.host)
-  (fromMaybe "" o.path)
-  (fromMaybe (-1) o.backlog)
-  (if o.exclusive then 1 else 0)
-  (if o.readableAll then 1 else 0)
-  (if o.writableAll then 1 else 0)
-  (if o.ipv6Only then 1 else 0)
+  o.port
+  o.host
+  o.path
+  o.backlog
+  o.exclusive
+  o.readableAll
+  o.writableAll
+  o.ipv6Only
 

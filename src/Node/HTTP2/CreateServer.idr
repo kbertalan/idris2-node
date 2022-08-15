@@ -1,6 +1,5 @@
 module Node.HTTP2.CreateServer
 
-import Data.Maybe
 import Node.HTTP2.Type
 
 public export
@@ -63,36 +62,40 @@ data NodeSettings : Type where [external]
   , maxConcurrentStreams
   , maxHeaderListSize
   , enableConnectProtocol
-  ) => ({
-    headerTableSize,
-    enablePush: !!enablePush && undefined, // -- TODO check why value true not accepted?
-    initialWindowSize,
-    maxFrameSize,
-    maxConcurrentStreams,
-    maxHeaderListSize,
-    enableConnectProtocol: enableConnectProtocol != 0
-  })
+  ) => {
+    const bool = (b) => b != 0
+    const settings = {
+      headerTableSize,
+      enablePush: bool(enablePush) && undefined, // -- TODO check why value true not accepted and causing HTTP2 session errrors?
+      initialWindowSize,
+      maxFrameSize,
+      maxConcurrentStreams,
+      maxHeaderListSize,
+      enableConnectProtocol: bool(enableConnectProtocol)
+    }
+    return settings
+  }
   """
 ffi_convertSettings :
   (headerTableSize: Int) ->
-  (enablePush: Int) ->
+  (enablePush: Bool) ->
   (initialWindowSize: Int) ->
   (maxFrameSize: Int) ->
   (maxConcurrentStreams: Double) ->
   (maxHeaderListSize: Int) ->
-  (enableConnectProtocol: Int) ->
+  (enableConnectProtocol: Bool) ->
   NodeSettings
 
 export
 convertSettings : Settings -> NodeSettings
 convertSettings s = ffi_convertSettings
   s.headerTableSize
-  (if s.enablePush then 1 else 0)
+  s.enablePush
   s.initialWindowSize
   s.maxFrameSize
   s.maxConcurrentStreams
   s.maxHeaderListSize
-  (if s.enableConnectProtocol then 1 else 0)
+  s.enableConnectProtocol
 
 public export
 record Options where
@@ -144,20 +147,24 @@ data NodeOptions : Type where [external]
   , maxSessionRejectedStreams
   , settings
   , unknownProtocolTimeout
-  ) => ({
-    maxDeflateDynamicTableSize,
-    maxSettings,
-    maxSessionMemory,
-    maxHeaderListPairs,
-    maxOutstandingPings,
-    maxSendHeaderBlockLength: maxSendHeaderBlockLength != -1 ? maxSendHeaderBlockLength : undefined,
-    paddingStrategy,
-    peerMaxConcurrentStreams,
-    maxSessionInvalidFrames,
-    maxSessionRejectedStreams,
-    settings,
-    unknownProtocolTimeout
-  })
+  ) => {
+    const maybe = ({h, a1}) => h === undefined ? a1 : undefined
+    const opts = {
+      maxDeflateDynamicTableSize,
+      maxSettings,
+      maxSessionMemory,
+      maxHeaderListPairs,
+      maxOutstandingPings,
+      maxSendHeaderBlockLength: maybe(maxSendHeaderBlockLength),
+      paddingStrategy,
+      peerMaxConcurrentStreams,
+      maxSessionInvalidFrames,
+      maxSessionRejectedStreams,
+      settings,
+      unknownProtocolTimeout
+    }
+    return opts
+  }
   """
 ffi_convertOptions :
   (maxDeflateDynamicTableSize: Int) ->
@@ -165,7 +172,7 @@ ffi_convertOptions :
   (maxSessionMemory: Int) ->
   (maxHeaderListPairs: Int) ->
   (maxOutstandingPings: Int) ->
-  (maxSendHeaderBlockLength: Int) ->
+  (maxSendHeaderBlockLength: Maybe Int) ->
   (paddingStrategy: NodePaddingStrategy) ->
   (peerMaxConcurrentStreams: Int) ->
   (maxSessionInvalidFrames: Int ) ->
@@ -182,7 +189,7 @@ convertOptions o = ffi_convertOptions
   o.maxSessionMemory
   o.maxHeaderListPairs
   o.maxOutstandingPings
-  (fromMaybe (-1) o.maxSendHeaderBlockLength)
+  o.maxSendHeaderBlockLength
   (convertPaddingStrategy o.paddingStrategy)
   o.peerMaxConcurrentStreams
   o.maxSessionInvalidFrames

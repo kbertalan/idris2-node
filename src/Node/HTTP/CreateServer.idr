@@ -29,33 +29,32 @@ data NodeOptions : Type where [external]
   , noDelay
   , keepAlive
   , keepAliveInitialDelay
-  ) => ({
-    insecureHTTPParser: insecureHTTPParser != 0,
-    maxHeaderSize,
-    noDelay: noDelay != 0,
-    keepAlive: keepAlive != 0,
-    keepAliveInitialDelay
-  })
+  ) => {
+    const bool = (b) => b != 0
+    const opts = {
+      insecureHTTPParser: bool(insecureHTTPParser),
+      maxHeaderSize,
+      noDelay: bool(noDelay),
+      keepAlive: bool(keepAlive),
+      keepAliveInitialDelay
+    }
+    return opts
+  }
   """
 ffi_convertOptions :
-  (insecureHTTPParser: Int) ->
-  (maxHeaderSize: Int ) ->
-  (noDelay: Int) ->
-  (keepAlive: Int) ->
+  (insecureHTTPParser: Bool) ->
+  (maxHeaderSize: Int) ->
+  (noDelay: Bool) ->
+  (keepAlive: Bool) ->
   (keepAliveInitialDelay: Int) ->
   NodeOptions
 
 export
 convertOptions : Options -> NodeOptions
 convertOptions o = ffi_convertOptions
-  (boolToInt o.insecureHTTPParser)
+  o.insecureHTTPParser
   o.maxHeaderSize
-  (boolToInt o.noDelay)
-  (boolToInt o.keepAlive)
+  o.noDelay
+  o.keepAlive
   o.keepAliveInitialDelay
-  where
-    boolToInt : Bool -> Int
-    boolToInt = \case
-      True => 1
-      False => 0
 
