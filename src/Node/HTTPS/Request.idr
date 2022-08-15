@@ -9,7 +9,7 @@ import public Node.TLS.CreateSecureContext
 public export
 record Options where
   constructor MkOptions
-  requestOptions: Node.HTTP.Request.Options Headers
+  requestOptions: RequestOptions Headers
   tlsConnectOptions: Node.TLS.Connect.Options
   tlsCreateSecureContextOptions: Node.TLS.CreateSecureContext.Options
   socketConnectOptions: Maybe Node.Net.Socket.Connect.Options
@@ -17,7 +17,7 @@ record Options where
 export
 defaultOptions : HTTPS.Request.Options
 defaultOptions = MkOptions
-  { requestOptions = { protocol := "https:" } defaultOptions
+  { requestOptions = { protocol := "https:" } defaultRequestOptions
   , tlsConnectOptions = defaultOptions
   , tlsCreateSecureContextOptions = defaultOptions
   , socketConnectOptions = Nothing
@@ -44,7 +44,7 @@ data NodeOptions : Type where [external]
   }
   """
 ffi_convertOptions:
-  (requestOptions: Node.HTTP.Request.NodeOptions)
+  (requestOptions: NodeRequestOptions)
   -> (tlsConnectOptions: Node.TLS.Connect.NodeOptions)
   -> (tlsCreateSecureContextOptions: Node.TLS.CreateSecureContext.NodeOptions)
   -> (socketConnectOptions: Maybe Node.Net.Socket.Connect.NodeOptions)
@@ -53,7 +53,7 @@ ffi_convertOptions:
 export
 convertOptions : Node.HTTPS.Request.Options -> Node.HTTPS.Request.NodeOptions
 convertOptions o = ffi_convertOptions
-  (convertOptions o.requestOptions)
+  (convertRequestOptions o.requestOptions)
   (convertOptions o.tlsConnectOptions)
   (convertOptions o.tlsCreateSecureContextOptions)
   (convertOptions <$> o.socketConnectOptions)

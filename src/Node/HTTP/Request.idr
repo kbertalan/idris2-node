@@ -6,8 +6,8 @@ import public Node.HTTP.Headers
 import Node.Net.Socket.Connect
 
 public export
-record Options h where
-  constructor MkOptions
+record RequestOptions h where
+  constructor MkRequestOptions
   agent: Maybe Agent
   auth: Maybe String
   -- TODO: createConnection
@@ -32,8 +32,8 @@ record Options h where
   -- TODO: signal
 
 export
-defaultOptions : Options h
-defaultOptions = MkOptions
+defaultRequestOptions : RequestOptions h
+defaultRequestOptions = MkRequestOptions
   { agent = Nothing
   , auth = Nothing
   , defaultPort = Nothing
@@ -54,7 +54,7 @@ defaultOptions = MkOptions
   }
 
 export
-data NodeOptions : Type where [external]
+data NodeRequestOptions : Type where [external]
 
 %foreign """
   node:lambda:
@@ -101,7 +101,7 @@ data NodeOptions : Type where [external]
     return opts
   }
   """
-ffi_convertOptions :
+ffi_convertRequestOptions :
   (agent: Maybe Agent)
   -> (auth: Maybe String)
   -> (defaultPort: Maybe Int)
@@ -119,11 +119,11 @@ ffi_convertOptions :
   -> (setHost: Bool)
   -> (socketPath: Maybe String)
   -> (timeout: Maybe Int)
-  -> Request.NodeOptions
+  -> Request.NodeRequestOptions
 
 export
-convertOptions : Options h -> Request.NodeOptions
-convertOptions o = ffi_convertOptions
+convertRequestOptions : RequestOptions h -> Request.NodeRequestOptions
+convertRequestOptions o = ffi_convertRequestOptions
   o.agent
   o.auth
   o.defaultPort
@@ -143,20 +143,20 @@ convertOptions o = ffi_convertOptions
   o.timeout
 
 public export
-record RequestOptions where
-  constructor MkRequestOptions
-  requestOptions: Options Headers
+record Options where
+  constructor MkOptions
+  requestOptions: RequestOptions Headers
   socketConnectOptions: Maybe Connect.Options
 
 export
-defaultRequestOptions : RequestOptions
-defaultRequestOptions = MkRequestOptions
-  { requestOptions = defaultOptions
+defaultOptions : Request.Options
+defaultOptions = MkOptions
+  { requestOptions = defaultRequestOptions
   , socketConnectOptions = Nothing
   }
 
 export
-data NodeRequestOptions : Type where [external]
+data NodeOptions : Type where [external]
 
 %foreign """
   node:lambda:
@@ -170,14 +170,14 @@ data NodeRequestOptions : Type where [external]
     }
   }
   """
-ffi_convertRequestOptions :
-  (requestOptions : Request.NodeOptions)
+ffi_convertOptions :
+  (requestOptions : Request.NodeRequestOptions)
   -> (socketConnectOptions : Maybe Connect.NodeOptions)
-  -> NodeRequestOptions
+  -> Request.NodeOptions
 
 export
-convertRequestOptions : RequestOptions -> NodeRequestOptions
-convertRequestOptions o = ffi_convertRequestOptions
-  (convertOptions o.requestOptions)
+convertOptions : Request.Options -> Request.NodeOptions
+convertOptions o = ffi_convertOptions
+  (convertRequestOptions o.requestOptions)
   (convertOptions <$> o.socketConnectOptions)
 
