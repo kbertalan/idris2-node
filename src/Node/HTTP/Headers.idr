@@ -1,5 +1,7 @@
 module Node.HTTP.Headers
 
+import Node.Internal.Support
+
 export
 data Headers : Type where [external]
 
@@ -29,9 +31,9 @@ export
   (headers, name) => { 
     const value = headers[name]
     if (value !== undefined && value !== null) {
-       return { a1: value } // Just
+       return _just(value)
     }
-    return { h: 0 } // Nothing
+    return _nothing()
   }
   """
 ffi_getHeader : Headers -> String -> Maybe String

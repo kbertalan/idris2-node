@@ -7,6 +7,20 @@ module Node.Internal.Support
   """
 maybe : Maybe a -> AnyPtr
 
+%nomangle "javascript:_just"
+%foreign """
+  javascript:lambda:
+  (a) => ({a1:a})
+  """
+just : a -> Maybe a
+
+%nomangle "javascript:_nothing"
+%foreign """
+  javascript:lambda:
+  () => ({h:0})
+  """
+nothing : () -> Maybe a
+
 %nomangle "javascript:_bool"
 %foreign """
   javascript:lambda:
@@ -20,6 +34,20 @@ bool : Bool -> AnyPtr
   (b) => b !== undefined ? b != 0 : undefined
   """
 maybeBool : AnyPtr -> AnyPtr
+
+%nomangle "javascript:_left"
+%foreign """
+  javascript:lambda:
+  (a) => ({h:0,a1:a})
+  """
+left : a -> Either a b
+
+%nomangle "javascript:_right"
+%foreign """
+  javascript:lambda:
+  (a) => ({h:1,a1:a})
+  """
+right : a -> Either b a
 
 %nomangle "javascript:_keepDefined"
 %foreign """

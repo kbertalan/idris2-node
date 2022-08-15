@@ -1,5 +1,7 @@
 module Node.URI
 
+import Node.Internal.Support
+
 public export
 data URIError = MkURIError String
 
@@ -9,15 +11,9 @@ export
   s => {
     try {
       const result = decodeURI(s);
-      return {
-        h: 1, // Right
-        a1: result
-      };
+      return _right(result)
     } catch(e) {
-      return {
-        h: 0, // Left
-        a1: e.message
-      };
+      return _left(e.message)
     }
   }
   """
@@ -29,15 +25,9 @@ export
   s => {
     try {
       const result = decodeURIComponent(s);
-      return {
-        h: 1, // Right
-        a1: result
-      };
+      return _right(result)
     } catch(e) {
-      return {
-        h: 0, // Left
-        a1: e.message
-      };
+      return _left(e.message)
     }
   }
   """
@@ -49,15 +39,9 @@ export
   s => {
     try {
       const result = encodeURI(s);
-      return {
-        h: 1, // Right
-        a1: result
-      };
+      return _right(result)
     } catch(e) {
-      return {
-        h: 0, // Left
-        a1: e.message
-      };
+      return _left(e.message)
     }
   }
   """
@@ -69,15 +53,9 @@ export
   s => {
     try {
       const result = encodeURIComponent(s);
-      return {
-        h: 1, // Right
-        a1: result
-      };
+      return _right(result)
     } catch(e) {
-      return {
-        h: 0, // Left
-        a1: e.message
-      };
+      return _left(e.message)
     }
   }
   """

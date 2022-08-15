@@ -12,6 +12,18 @@ statsReturnType : StatsReturnType -> Type
 statsReturnType StatsBigInt = Integer
 statsReturnType StatsInt = Int
 
+public export
+isBigInt : StatsReturnType -> Bool
+isBigInt = \case
+  StatsBigInt => True
+  StatsInt => False
+
+public export
+isInt : StatsReturnType -> Bool
+isInt = \case
+  StatsBigInt => False
+  StatsInt => True
+
 export
 data Stats : StatsReturnType -> Type where [external]
 
