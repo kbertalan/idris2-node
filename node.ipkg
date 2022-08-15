@@ -55,3 +55,5 @@ opts      = "--codegen node"
 
 sourcedir = "src"
 
+brief = "Node JS API bindings for Idris2"
+
