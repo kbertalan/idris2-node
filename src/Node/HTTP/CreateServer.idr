@@ -1,5 +1,7 @@
 module Node.HTTP.CreateServer
 
+import Node.Internal.Support
+
 public export
 record Options where
   constructor MkOptions
@@ -29,17 +31,13 @@ data NodeOptions : Type where [external]
   , noDelay
   , keepAlive
   , keepAliveInitialDelay
-  ) => {
-    const bool = (b) => b != 0
-    const opts = {
-      insecureHTTPParser: bool(insecureHTTPParser),
-      maxHeaderSize,
-      noDelay: bool(noDelay),
-      keepAlive: bool(keepAlive),
-      keepAliveInitialDelay
-    }
-    return opts
-  }
+  ) => _keepDefined({
+    insecureHTTPParser: _bool(insecureHTTPParser),
+    maxHeaderSize,
+    noDelay: _bool(noDelay),
+    keepAlive: _bool(keepAlive),
+    keepAliveInitialDelay
+  })
   """
 ffi_convertOptions :
   (insecureHTTPParser: Bool) ->

@@ -1,5 +1,6 @@
 module Node.HTTP.Request
 
+import Node.Internal.Support
 import Node.HTTP.Agent
 import public Node.HTTP.Headers
 import Node.Net.Socket.Connect
@@ -75,31 +76,25 @@ data NodeRequestOptions : Type where [external]
   , setHost
   , socketPath
   , timeout
-  ) => {
-    const maybe = ({h, a1}) => h === undefined ? a1 : undefined
-    const bool = (b) => b != 0
-    const opts = {
-      agent: maybe(agent),
-      auth: maybe(auth),
-      defaultPort: maybe(defaultPort),
-      family,
-      headers: maybe(headers),
-      hostname: maybe(hostname),
-      insecureHTTPParser: bool(insecureHTTPParser),
-      localAddress: maybe(localAddress),
-      localPort: maybe(localPort),
-      maxHeaderSize: maybe(maxHeaderSize),
-      method,
-      path: maybe(path),
-      port: maybe(port),
-      protocol,
-      setHost: bool(setHost),
-      socketPath: maybe(socketPath),
-      timeout: maybe(timeout)
-    }
-    Object.keys(opts).forEach(key => opts[key] === undefined && delete opts[key])
-    return opts
-  }
+  ) => _keepDefined({
+    agent: _maybe(agent),
+    auth: _maybe(auth),
+    defaultPort: _maybe(defaultPort),
+    family,
+    headers: _maybe(headers),
+    hostname: _maybe(hostname),
+    insecureHTTPParser: _bool(insecureHTTPParser),
+    localAddress: _maybe(localAddress),
+    localPort: _maybe(localPort),
+    maxHeaderSize: _maybe(maxHeaderSize),
+    method,
+    path: _maybe(path),
+    port: _maybe(port),
+    protocol,
+    setHost: _bool(setHost),
+    socketPath: _maybe(socketPath),
+    timeout: _maybe(timeout)
+  })
   """
 ffi_convertRequestOptions :
   (agent: Maybe Agent)
@@ -162,13 +157,10 @@ data NodeOptions : Type where [external]
   node:lambda:
   ( opts
   , socketOpts
-  ) => {
-    const maybe = ({h, a1}) => h === undefined ? a1 : undefined
-    return {
-      ...maybe(socketOpts),
-      ...opts
-    }
-  }
+  ) => ({
+    ..._maybe(socketOpts),
+    ...opts
+  })
   """
 ffi_convertOptions :
   (requestOptions : Request.NodeRequestOptions)

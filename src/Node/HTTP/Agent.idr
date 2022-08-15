@@ -1,5 +1,7 @@
 module Node.HTTP.Agent
 
+import Node.Internal.Support
+
 export
 data Agent : Type where [external]
 
@@ -47,18 +49,14 @@ data NodeAgentOptions : Type where [external]
     maxTotalSockets
     maxFreeSockets
     scheduling
-  ) => {
-    const bool = (b) => b = 0
-    const opts = {
-      keepAlive: bool(keepAlive),
-      keepAliveMsecs,
-      maxSockets,
-      maxTotalSockets,
-      maxFreeSockets,
-      scheduling
-    }
-    return opts
-  }
+  ) => _keepDefined({
+    keepAlive: _bool(keepAlive),
+    keepAliveMsecs,
+    maxSockets,
+    maxTotalSockets,
+    maxFreeSockets,
+    scheduling
+  })
   """
 ffi_nodeAgentOptions :
   (keepAlive : Bool) ->

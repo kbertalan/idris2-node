@@ -1,6 +1,7 @@
 module Node.HTTP2.CreateServer
 
 import Node.HTTP2.Type
+import Node.Internal.Support
 
 public export
 data PaddingStrategy
@@ -62,19 +63,15 @@ data NodeSettings : Type where [external]
   , maxConcurrentStreams
   , maxHeaderListSize
   , enableConnectProtocol
-  ) => {
-    const bool = (b) => b != 0
-    const settings = {
-      headerTableSize,
-      enablePush: bool(enablePush) && undefined, // -- TODO check why value true not accepted and causing HTTP2 session errrors?
-      initialWindowSize,
-      maxFrameSize,
-      maxConcurrentStreams,
-      maxHeaderListSize,
-      enableConnectProtocol: bool(enableConnectProtocol)
-    }
-    return settings
-  }
+  ) => _keepDefined({
+    headerTableSize,
+    enablePush: _bool(enablePush) && undefined, // -- TODO check why value true not accepted and causing HTTP2 session errrors?
+    initialWindowSize,
+    maxFrameSize,
+    maxConcurrentStreams,
+    maxHeaderListSize,
+    enableConnectProtocol: _bool(enableConnectProtocol)
+  })
   """
 ffi_convertSettings :
   (headerTableSize: Int) ->
@@ -147,24 +144,20 @@ data NodeOptions : Type where [external]
   , maxSessionRejectedStreams
   , settings
   , unknownProtocolTimeout
-  ) => {
-    const maybe = ({h, a1}) => h === undefined ? a1 : undefined
-    const opts = {
-      maxDeflateDynamicTableSize,
-      maxSettings,
-      maxSessionMemory,
-      maxHeaderListPairs,
-      maxOutstandingPings,
-      maxSendHeaderBlockLength: maybe(maxSendHeaderBlockLength),
-      paddingStrategy,
-      peerMaxConcurrentStreams,
-      maxSessionInvalidFrames,
-      maxSessionRejectedStreams,
-      settings,
-      unknownProtocolTimeout
-    }
-    return opts
-  }
+  ) => _keepDefined({
+    maxDeflateDynamicTableSize,
+    maxSettings,
+    maxSessionMemory,
+    maxHeaderListPairs,
+    maxOutstandingPings,
+    maxSendHeaderBlockLength: _maybe(maxSendHeaderBlockLength),
+    paddingStrategy,
+    peerMaxConcurrentStreams,
+    maxSessionInvalidFrames,
+    maxSessionRejectedStreams,
+    settings,
+    unknownProtocolTimeout
+  })
   """
 ffi_convertOptions :
   (maxDeflateDynamicTableSize: Int) ->

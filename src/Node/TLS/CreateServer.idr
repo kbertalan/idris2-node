@@ -1,6 +1,7 @@
 module Node.TLS.CreateServer
 
 import Data.Buffer.Ext
+import Node.Internal.Support
 
 public export
 record Options where
@@ -43,22 +44,16 @@ data NodeOptions : Type where [external]
   , sessionTimeout
   , ticketKeys
   , pskIdentityHint
-  ) => {
-    const maybe = ({h, a1}) => h === undefined ? a1 : undefined
-    const bool = (b) => b != 0
-    const opts = {
-      clientCertEngine: maybe(clientCertEngine),
-      enableTrace: bool(enableTrace),
-      handshakeTimeout,
-      rejectUnauthorized: bool(rejectUnauthorized),
-      requestCert: bool(requestCert),
-      sessionTimeout,
-      ticketKeys: maybe(ticketKeys),
-      pskIdentityHint: maybe(pskIdentityHint)
-    }
-    Object.keys(opts).forEach(key => opts[key] === undefined && delete opts[key])
-    return opts
-  }
+  ) => _keepDefined({
+    clientCertEngine: _maybe(clientCertEngine),
+    enableTrace: _bool(enableTrace),
+    handshakeTimeout,
+    rejectUnauthorized: _bool(rejectUnauthorized),
+    requestCert: _bool(requestCert),
+    sessionTimeout,
+    ticketKeys: _maybe(ticketKeys),
+    pskIdentityHint: _maybe(pskIdentityHint)
+  })
   """
 ffi_convertOptions : 
   (clientCertEngine: Maybe String) ->

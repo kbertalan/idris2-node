@@ -1,5 +1,7 @@
 module Node.Net.Socket.Connect
 
+import Node.Internal.Support
+
 public export
 data IpAddressFamily
   = IPv4
@@ -68,22 +70,16 @@ data NodeOptions : Type where [external]
   , noDelay
   , keepAlive
   , keepAliveInitialDelay
-  ) => {
-    const maybe = ({h, a1}) => h === undefined ? a1 : undefined
-    const opts = {
-      port,
-      host: maybe(host),
-      localAddress: maybe(localAddress),
-      localPort: maybe(localPort),
-      family,
-      noDelay,
-      keepAlive,
-      keepAliveInitialDelay
-    }
-
-    Object.key(opts).forEach(key => opts[key] === undefined && delete opts[key])
-    return opts
-  }
+  ) => _keepDefined({
+    port,
+    host: _maybe(host),
+    localAddress: _maybe(localAddress),
+    localPort: _maybe(localPort),
+    family,
+    noDelay,
+    keepAlive,
+    keepAliveInitialDelay
+  })
   """
 ffi_convertTCPOptions :
   (port: Int)

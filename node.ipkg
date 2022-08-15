@@ -36,6 +36,7 @@ modules = Node
   , Node.HTTP2.ServerHttp2Stream
   , Node.HTTP2.Static
   , Node.HTTP2.Type
+  , Node.Internal.Support
   , Node.Net
   , Node.Net.CreateServer
   , Node.Net.Server.Listen

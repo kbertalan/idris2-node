@@ -1,6 +1,7 @@
 module Node.TLS.Connect
 
 import Data.Buffer
+import Node.Internal.Support
 
 public export
 record Options where
@@ -52,24 +53,18 @@ data NodeOptions : Type where [external]
   , session
   , minDHSize
   , highWaterMark
-  ) => {
-    const maybe = ({h, a1}) => h === undefined ? a1 : undefined
-    const bool = (b) => b != 0
-    const opts = {
-      enableTrace: maybe(enableTrace),
-      host: maybe(host),
-      port: maybe(port),
-      path: maybe(path),
-      allowHalfOpen: bool(allowHalfOpen),
-      rejectUnauthorized: bool(rejectUnauthorized),
-      servername: maybe(servername),
-      session: maybe(session),
-      minDHSize: maybe(minDHSize),
-      highWaterMark: maybe(highWaterMark)
-    }
-    Object.keys(opts).forEach(key => opts[key] === undefined && delete opts[key])
-    return opts
-  }
+  ) => _keepDefined({
+    enableTrace: _maybe(enableTrace),
+    host: _maybe(host),
+    port: _maybe(port),
+    path: _maybe(path),
+    allowHalfOpen: _bool(allowHalfOpen),
+    rejectUnauthorized: _bool(rejectUnauthorized),
+    servername: _maybe(servername),
+    session: _maybe(session),
+    minDHSize: _maybe(minDHSize),
+    highWaterMark: _maybe(highWaterMark)
+  })
   """
 ffi_convertOptions:
   (enableTrace: Maybe Bool)

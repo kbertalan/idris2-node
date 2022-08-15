@@ -1,6 +1,7 @@
 module Node.TLS.CreateSecureContext
 
-import Data.Buffer.Ext
+import Data.Buffer
+import Node.Internal.Support
 
 public export
 record Options where
@@ -79,35 +80,29 @@ data NodeOptions : Type where [external]
   , sessionIdContext
   , ticketKeys
   , sessionTimeout
-  ) => {
-    const maybe = ({h, a1}) => h === undefined ? a1 : undefined
-    const bool = (b) => b === undefined ? undefined : b != 0
-    const opts = {
-      ca: __prim_idris2js_array(ca),
-      cert: __prim_idris2js_array(cert),
-      sigalgs: sigalgs.length > 0 ? __prim_idris2js_array(sigalgs).join(',') : undefined,
-      ciphers: maybe(ciphers),
-      clientCertEngine: maybe(clientCertEngine),
-      crl: __prim_idris2js_array(crl),
-      dhparam: maybe(dhparam),
-      ecdhCurve: maybe(ecdhCurve),
-      honorCipherOrder: bool(maybe(honorCipherOrder)),
-      key: __prim_idris2js_array(key),
-      privateKeyEngine: maybe(privateKeyEngine),
-      privateKeyIdentifier: maybe(privateKeyIdentifier),
-      maxVersion: maybe(maxVersion),
-      minVersion: maybe(minVersion),
-      passphrase: maybe(passphrase),
-      pfx: __prim_idris2js_array(pfx),
-      secureOptions: maybe(secureOptions),
-      secureProtocol: maybe(secureProtocol),
-      sessionIdContext: maybe(sessionIdContext),
-      ticketKeys: maybe(ticketKeys),
-      sessionTimeout
-    }
-    Object.keys(opts).forEach(key => opts[key] === undefined && delete opts[key])
-    return opts
-  }
+  ) => _keepDefined({
+    ca: __prim_idris2js_array(ca),
+    cert: __prim_idris2js_array(cert),
+    sigalgs: sigalgs.length > 0 ? __prim_idris2js_array(sigalgs).join(',') : undefined,
+    ciphers: _maybe(ciphers),
+    clientCertEngine: _maybe(clientCertEngine),
+    crl: __prim_idris2js_array(crl),
+    dhparam: _maybe(dhparam),
+    ecdhCurve: _maybe(ecdhCurve),
+    honorCipherOrder: _bool(_maybe(honorCipherOrder)),
+    key: __prim_idris2js_array(key),
+    privateKeyEngine: _maybe(privateKeyEngine),
+    privateKeyIdentifier: _maybe(privateKeyIdentifier),
+    maxVersion: _maybe(maxVersion),
+    minVersion: _maybe(minVersion),
+    passphrase: _maybe(passphrase),
+    pfx: __prim_idris2js_array(pfx),
+    secureOptions: _maybe(secureOptions),
+    secureProtocol: _maybe(secureProtocol),
+    sessionIdContext: _maybe(sessionIdContext),
+    ticketKeys: _maybe(ticketKeys),
+    sessionTimeout
+  })
   """
 ffi_convertOptions:
   (ca: List String) ->

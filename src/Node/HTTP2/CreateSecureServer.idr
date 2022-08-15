@@ -2,6 +2,7 @@ module Node.HTTP2.CreateSecureServer
 
 import Node.HTTP2.CreateServer
 import Node.HTTP2.Type
+import Node.Internal.Support
 
 %hide Node.HTTP2.CreateServer.Options
 %hide Node.HTTP2.CreateServer.NodeOptions
@@ -62,28 +63,22 @@ data NodeOptions : Type where [external]
   , settings
   , origins
   , unknownProtocolTimeout
-  ) => {
-    const maybe = ({h, a1}) => h === undefined ? a1 : undefined
-    const bool = (b) => b != 0
-    const opts = {
-      allowHTTP1: bool(allowHTTP1),
-      maxDeflateDynamicTableSize,
-      maxSettings,
-      maxSessionMemory,
-      maxHeaderListPairs,
-      maxOutstandingPings,
-      maxSendHeaderBlockLength: maybe(maxSendHeaderBlockLength),
-      paddingStrategy,
-      peerMaxConcurrentStreams,
-      maxSessionInvalidFrames,
-      maxSessionRejectedStreams,
-      settings,
-      origins: __prim_idris2js_array(origins),
-      unknownProtocolTimeout
-    }
-    Object.keys(opts).forEach(key => opts[key] === undefined && delete opts[key])
-    return opts
-  }
+  ) => _keepDefined({
+    allowHTTP1: _bool(allowHTTP1),
+    maxDeflateDynamicTableSize,
+    maxSettings,
+    maxSessionMemory,
+    maxHeaderListPairs,
+    maxOutstandingPings,
+    maxSendHeaderBlockLength: _maybe(maxSendHeaderBlockLength),
+    paddingStrategy,
+    peerMaxConcurrentStreams,
+    maxSessionInvalidFrames,
+    maxSessionRejectedStreams,
+    settings,
+    origins: __prim_idris2js_array(origins),
+    unknownProtocolTimeout
+  })
   """
 ffi_convertOptions :
   (allowHTTP1: Bool) ->

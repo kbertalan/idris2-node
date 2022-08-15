@@ -32,16 +32,12 @@ data NodeOptions : Type where [external]
   , tlsConnectOptions
   , tlsCreateSecureContextOptions
   , socketConnectOptions
-  ) => {
-    const maybe = ({h, a1}) => h === undefined || undefined
-    const opts = {
-      ...maybe(socketConnectOptions),
-      ...tlsCreateSecureContextOptions,
-      ...tlsConnectOptions,
-      ...requestOptions
-    }
-    return opts
-  }
+  ) => _keepDefined({
+    ..._maybe(socketConnectOptions),
+    ...tlsCreateSecureContextOptions,
+    ...tlsConnectOptions,
+    ...requestOptions
+  })
   """
 ffi_convertOptions:
   (requestOptions: NodeRequestOptions)

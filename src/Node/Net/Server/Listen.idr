@@ -1,5 +1,7 @@
 module Node.Net.Server.Listen
 
+import Node.Internal.Support
+
 public export
 record Options where
   constructor MkOptions
@@ -39,22 +41,16 @@ data NodeOptions : Type where [external]
   , readableAll
   , writableAll
   , ipv6Only
-  ) => {
-    const maybe = ({h, a1}) => h === undefined ? a1 : undefined
-    const bool = (b) => b != 0
-    const opts = {
-      port: maybe(port),
-      host: maybe(host),
-      path: maybe(path),
-      backlog: maybe(backlog),
-      exclusive: bool(exclusive),
-      readableAll: bool(readableAll),
-      writableAll: bool(writableAll),
-      ipv6Only: bool(ipv6Only),
-    }
-    Object.keys(opts).forEach(key => opts[key] === undefined && delete opts[key])
-    return opts
-  }
+  ) => _keepDefined({
+    port: _maybe(port),
+    host: _maybe(host),
+    path: _maybe(path),
+    backlog: _maybe(backlog),
+    exclusive: _bool(exclusive),
+    readableAll: _bool(readableAll),
+    writableAll: _bool(writableAll),
+    ipv6Only: _bool(ipv6Only),
+  })
   """
 ffi_convertOptions :
   (port : Maybe Int) ->
