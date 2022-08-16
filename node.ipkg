@@ -48,6 +48,9 @@ modules =
   , Node.Net.CreateServer
   , Node.Net.Server.Listen
   , Node.Net.Socket.Connect
+  , Node.Process
+  , Node.Process.Static
+  , Node.Process.Type
   , Node.Stream
   , Node.Stream.Writeable
   , Node.Stream.Readable
