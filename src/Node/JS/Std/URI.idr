@@ -1,4 +1,4 @@
-module Node.URI
+module Node.JS.Std.URI
 
 import Node.Internal.Support
 

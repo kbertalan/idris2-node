@@ -37,6 +37,7 @@ modules = Node
   , Node.HTTP2.Static
   , Node.HTTP2.Type
   , Node.Internal.Support
+  , Node.JS.Std.URI
   , Node.Net
   , Node.Net.CreateServer
   , Node.Net.Server.Listen
@@ -47,7 +48,6 @@ modules = Node
   , Node.TLS.Connect
   , Node.TLS.CreateSecureContext
   , Node.TLS.CreateServer
-  , Node.URI
   , Data.Buffer.Ext
 
 depends = promise

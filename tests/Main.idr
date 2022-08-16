@@ -4,15 +4,18 @@ import Test.Golden
 
 node : TestPool
 node = MkTestPool "Node tests" [] (Just Node)
-  [ "node/uri"
-  , "node/fs"
+  [ "node/fs"
   , "node/http"
   , "node/http2"
   , "node/https"
   ]
 
+js : TestPool
+js = MkTestPool "JS tests" [] (Just Node)
+  [ "node/js/uri" ]
+
 ext : TestPool
 ext = MkTestPool "Extensions" [] Nothing [ "ext/buffer" ]
 
 main : IO ()
-main = runner [ node, ext ]
+main = runner [ node, js, ext ]

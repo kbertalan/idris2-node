@@ -1,6 +1,6 @@
 module URI
 
-import Node.URI
+import Node.JS.Std.URI
 
 test : (fn : String -> Either URIError String) -> String -> String
 test fn input = case fn input of
