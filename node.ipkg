@@ -1,7 +1,7 @@
 package node
 
-modules = Node
-  , Node.Error
+modules =
+  Node.Error
   , Node.Event.Internal
   , Node.FS
   , Node.FS.ReadStream
@@ -37,6 +37,8 @@ modules = Node
   , Node.HTTP2.Static
   , Node.HTTP2.Type
   , Node.Internal.Support
+  , Node.JS.Misc
+  , Node.JS.Std.JSON
   , Node.JS.Std.URI
   , Node.Net
   , Node.Net.CreateServer
@@ -45,6 +47,10 @@ modules = Node
   , Node.Stream
   , Node.Stream.Writeable
   , Node.Stream.Readable
+  , Node.Timers
+  , Node.Timers.Immediate
+  , Node.Timers.Static
+  , Node.Timers.Timeout
   , Node.TLS.Connect
   , Node.TLS.CreateSecureContext
   , Node.TLS.CreateServer

@@ -35,6 +35,20 @@ bool : Bool -> AnyPtr
   """
 maybeBool : AnyPtr -> AnyPtr
 
+%nomangle "javascript:_true"
+%foreign """
+  javascript:lambda:
+  () => 1
+  """
+true : () -> Bool
+
+%nomangle "javascript:_false"
+%foreign """
+  javascript:lambda:
+  () => 0
+  """
+false : () -> Bool
+
 %nomangle "javascript:_left"
 %foreign """
   javascript:lambda:
