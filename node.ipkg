@@ -1,7 +1,11 @@
 package node
 
 modules =
-  Node.Error
+  Node.Console
+  , Node.Console.Console
+  , Node.Console.Static
+  , Node.Console.Type
+  , Node.Error
   , Node.Event.Internal
   , Node.FS
   , Node.FS.ReadStream

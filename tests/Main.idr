@@ -4,7 +4,8 @@ import Test.Golden
 
 node : TestPool
 node = MkTestPool "Node tests" [] (Just Node)
-  [ "node/fs"
+  [ "node/console"
+  , "node/fs"
   , "node/http"
   , "node/http2"
   , "node/https"
