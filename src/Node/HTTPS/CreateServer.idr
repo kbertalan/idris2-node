@@ -8,55 +8,57 @@ import public Node.TLS.CreateServer as TLS
 import public Node.TLS.CreateSecureContext as SecureContext
 
 public export
-ServerOptions : Type
-ServerOptions = HTTP.Options
+Options : Type
+Options = HTTP.Options
 
 public export
-defaultServerOptions : HTTPS.CreateServer.ServerOptions
-defaultServerOptions = HTTP.defaultOptions
-
-public export
-record Options where
-  constructor MkOptions
-  server: ServerOptions
-  context: SecureContext.Options
-  tls: TLS.Options
-  net: Net.Options
-
-export
 defaultOptions : HTTPS.CreateServer.Options
-defaultOptions = MkOptions
-  { server = defaultServerOptions
-  , context = defaultOptions
-  , tls = defaultOptions
-  , net = defaultOptions
-  }
+defaultOptions = HTTP.defaultOptions
 
-%foreign """
-  node:lambda:
-  ( server
-  , secure
-  , tls
-  , net
-  ) => ({
-    ...net,
-    ...tls,
-    ...secure,
-    ...server
-  })
-  """
-ffi_convertOptions :
-  Node ServerOptions
-  -> Node SecureContext.Options
-  -> Node TLS.Options
-  -> Node Net.Options
-  -> Node HTTPS.CreateServer.Options
+namespace Command
 
-export
-convertOptions : HTTPS.CreateServer.Options -> Node HTTPS.CreateServer.Options
-convertOptions o = ffi_convertOptions
-  (convertOptions o.server)
-  (convertOptions o.context)
-  (convertOptions o.tls)
-  (convertOptions o.net)
+  public export
+  record Options where
+    constructor MkOptions
+    server: HTTPS.CreateServer.Options
+    context: SecureContext.Options
+    tls: TLS.Options
+    net: Net.Options
+
+  export
+  defaultOptions : HTTPS.CreateServer.Command.Options
+  defaultOptions = MkOptions
+    { server = HTTPS.CreateServer.defaultOptions
+    , context = defaultOptions
+    , tls = defaultOptions
+    , net = defaultOptions
+    }
+
+  %foreign """
+    node:lambda:
+    ( server
+    , secure
+    , tls
+    , net
+    ) => ({
+      ...net,
+      ...tls,
+      ...secure,
+      ...server
+    })
+    """
+  ffi_convertOptions :
+    Node HTTPS.CreateServer.Options
+    -> Node SecureContext.Options
+    -> Node TLS.Options
+    -> Node Net.Options
+    -> Node HTTPS.CreateServer.Command.Options
+
+  export
+  convertOptions : HTTPS.CreateServer.Command.Options -> Node HTTPS.CreateServer.Command.Options
+  convertOptions o = ffi_convertOptions
+    (convertOptions o.server)
+    (convertOptions o.context)
+    (convertOptions o.tls)
+    (convertOptions o.net)
 
