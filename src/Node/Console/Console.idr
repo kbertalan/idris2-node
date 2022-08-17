@@ -11,23 +11,23 @@ data Console : Type where [external]
 
 public export
 data ColorMode
-  = True
-  | False
+  = Enabled
+  | Disabled
   | Auto
 
 %foreign "node:lambda: () => true"
-ffi_colorMode_true : Node ColorMode
+ffi_colorMode_enabled : Node ColorMode
 
 %foreign "node:lambda: () => false"
-ffi_colorMode_false : Node ColorMode
+ffi_colorMode_disabled : Node ColorMode
 
 %foreign "node:lambda: () => 'auto'"
 ffi_colorMode_auto : Node ColorMode
 
 convertColorMode : ColorMode -> Node ColorMode
 convertColorMode = \case
-  True => ffi_colorMode_true
-  False => ffi_colorMode_false
+  Enabled => ffi_colorMode_enabled
+  Disabled => ffi_colorMode_disabled
   Auto => ffi_colorMode_auto
 
 public export

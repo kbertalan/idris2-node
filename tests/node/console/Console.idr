@@ -44,7 +44,7 @@ main = do
 
   process <- Process.require
   consoleM <- Console.require
-  let opts : Console.Options StdOut StdOut = { colorMode := True } (defaultOptions process.stdout process.stdout)
+  let opts : Console.Options StdOut StdOut = { colorMode := Enabled } (defaultOptions process.stdout process.stdout)
   logger <- consoleM.newConsole opts 
 
   logger.log "using logger"
