@@ -3,9 +3,9 @@ module Node.HTTPS.CreateServer
 import Node
 import Node.HTTP.CreateServer as HTTP
 import Node.Internal.Support
-import Node.Net.CreateServer as Net
-import Node.TLS.CreateServer as TLS
-import Node.TLS.CreateSecureContext as SecureContext
+import public Node.Net.CreateServer as Net
+import public Node.TLS.CreateServer as TLS
+import public Node.TLS.CreateSecureContext as SecureContext
 
 public export
 ServerOptions : Type
