@@ -7,8 +7,8 @@ import public Node.HTTP.Headers
 import Node.Net.Socket.Connect
 
 public export
-record RequestOptions h where
-  constructor MkRequestOptions
+record Options h where
+  constructor MkOptions
   agent: Maybe Agent
   auth: Maybe String
   -- TODO: createConnection
@@ -33,8 +33,8 @@ record RequestOptions h where
   -- TODO: signal
 
 export
-defaultRequestOptions : RequestOptions h
-defaultRequestOptions = MkRequestOptions
+defaultOptions : Options h
+defaultOptions = MkOptions
   { agent = Nothing
   , auth = Nothing
   , defaultPort = Nothing
@@ -94,7 +94,7 @@ defaultRequestOptions = MkRequestOptions
     timeout: _maybe(timeout)
   })
   """
-ffi_convertRequestOptions :
+ffi_convertOptions :
   (agent: Maybe Agent)
   -> (auth: Maybe String)
   -> (defaultPort: Maybe Int)
@@ -112,11 +112,11 @@ ffi_convertRequestOptions :
   -> (setHost: Bool)
   -> (socketPath: Maybe String)
   -> (timeout: Maybe Int)
-  -> Node $ Request.RequestOptions h
+  -> Node $ Request.Options h
 
 export
-convertRequestOptions : RequestOptions h -> Node $ Request.RequestOptions h
-convertRequestOptions o = ffi_convertRequestOptions
+convertOptions : Options h -> Node $ Options h
+convertOptions o = ffi_convertOptions
   o.agent
   o.auth
   o.defaultPort
@@ -135,36 +135,38 @@ convertRequestOptions o = ffi_convertRequestOptions
   o.socketPath
   o.timeout
 
-public export
-record Options where
-  constructor MkOptions
-  requestOptions: RequestOptions Headers
-  socketConnectOptions: Maybe Connect.Options
+namespace Command
 
-export
-defaultOptions : Request.Options
-defaultOptions = MkOptions
-  { requestOptions = defaultRequestOptions
-  , socketConnectOptions = Nothing
-  }
+  public export
+  record Options where
+    constructor MkOptions
+    request: Request.Options Headers
+    socket: Maybe Connect.Options
 
-%foreign """
-  node:lambda:
-  ( opts
-  , socketOpts
-  ) => ({
-    ..._maybe(socketOpts),
-    ...opts
-  })
-  """
-ffi_convertOptions :
-  (requestOptions : Node $ Request.RequestOptions Headers)
-  -> (socketConnectOptions : Maybe (Node Connect.Options))
-  -> Node Request.Options
+  export
+  defaultOptions : Command.Options
+  defaultOptions = MkOptions
+    { request = defaultOptions
+    , socket = Nothing
+    }
 
-export
-convertOptions : Request.Options -> Node Request.Options
-convertOptions o = ffi_convertOptions
-  (convertRequestOptions o.requestOptions)
-  (convertOptions <$> o.socketConnectOptions)
+  %foreign """
+    node:lambda:
+    ( request
+    , socket
+    ) => ({
+      ..._maybe(socket),
+      ...request
+    })
+    """
+  ffi_convertOptions :
+    (request : Node $ Request.Options Headers)
+    -> (socket : Maybe (Node Connect.Options))
+    -> Node Command.Options
+
+  export
+  convertOptions : Command.Options -> Node Command.Options
+  convertOptions o = ffi_convertOptions
+    (convertOptions o.request)
+    (convertOptions <$> o.socket)
 

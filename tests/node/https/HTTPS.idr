@@ -16,10 +16,10 @@ main = do
 
   let port = 3443
   https <- HTTPS.require
-  let tls = { key := [key]
-            , cert := [cert]
-            } defaultOptions
-  server <- https.createServer defaultOptions defaultOptions tls defaultOptions
+  let opts = { context.key := [key]
+             , context.cert := [cert]
+             } defaultOptions
+  server <- https.createServer opts
   server.listen $ { port := Just port } Listen.defaultOptions
   server.onRequest $ \req, res => do
     putStrLn "server processing request"
@@ -29,8 +29,7 @@ main = do
     req.onData $ \d => res.write d Nothing
     req.onClose $ res.end Nothing
 
-  let allowInsecure = { tlsConnectOptions.rejectUnauthorized := False
-                     } defaultOptions
+  let allowInsecure = { tls.rejectUnauthorized := False } defaultOptions
 
   req <- https.post "https://localhost:\{show port}/something" allowInsecure $ \res => do
     putStrLn "HTTPS POST:"

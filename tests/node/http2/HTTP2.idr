@@ -16,10 +16,10 @@ main = do
 
   let port = 3443
   http2 <- HTTP2.require
-  let tls = { key := [key]
-            , cert := [cert]
-            } defaultOptions
-  server <- http2.createSecureServer defaultOptions defaultOptions tls defaultOptions
+  let opts = { context.key := [key]
+             , context.cert := [cert]
+             } defaultOptions
+  server <- http2.createSecureServer opts
   server.onStream $ \stream, headers => do
     putStrLn "server processing request"
     h <- empty

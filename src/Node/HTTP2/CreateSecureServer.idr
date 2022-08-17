@@ -4,6 +4,9 @@ import Node
 import Node.HTTP2.CreateServer
 import Node.HTTP2.Type
 import Node.Internal.Support
+import public Node.Net.CreateServer
+import public Node.TLS.CreateServer
+import public Node.TLS.CreateSecureContext
 
 public export
 record Options where
@@ -109,4 +112,51 @@ convertOptions o = ffi_convertOptions
   (convertSettings o.settings)
   o.origins
   o.unknownProtocolTimeout
+
+namespace Command
+
+  public export
+  record Options where
+    constructor MkOptions
+    server: HTTP2.CreateSecureServer.Options
+    context: TLS.CreateSecureContext.Options
+    tls: TLS.CreateServer.Options
+    net: Net.CreateServer.Options
+
+  export
+  defaultOptions : HTTP2.CreateSecureServer.Command.Options
+  defaultOptions = MkOptions
+    { server = defaultOptions
+    , context = defaultOptions
+    , tls = defaultOptions
+    , net = defaultOptions
+    }
+
+  %foreign """
+    node:lambda:
+    ( server
+    , context
+    , tls
+    , net
+    ) => ({
+      ...net,
+      ...tls,
+      ...context,
+      ...server
+    })
+    """
+  ffi_convertOptions :
+    (server : Node HTTP2.CreateSecureServer.Options)
+    -> (context : Node TLS.CreateSecureContext.Options)
+    -> (tls : Node TLS.CreateServer.Options)
+    -> (net : Node Net.CreateServer.Options)
+    -> Node CreateSecureServer.Command.Options
+
+  export
+  convertOptions : {auto http2 : HTTP2} -> HTTP2.CreateSecureServer.Command.Options -> Node HTTP2.CreateSecureServer.Command.Options
+  convertOptions o = ffi_convertOptions
+    (convertOptions o.server)
+    (convertOptions o.context)
+    (convertOptions o.tls)
+    (convertOptions o.net)
 

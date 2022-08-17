@@ -3,6 +3,7 @@ module Node.HTTP2.CreateServer
 import Node
 import Node.HTTP2.Type
 import Node.Internal.Support
+import public Node.Net.CreateServer
 
 public export
 data PaddingStrategy
@@ -106,7 +107,7 @@ record Options where
   unknownProtocolTimeout: Int
 
 export
-defaultOptions : Options
+defaultOptions : HTTP2.CreateServer.Options
 defaultOptions = MkOptions
   { maxDeflateDynamicTableSize = 4096
   , maxSettings = 32
@@ -164,10 +165,10 @@ ffi_convertOptions :
   (maxSessionRejectedStreams: Int) ->
   (settings: Node Settings) ->
   (unknownProtocolTimeout: Int) ->
-  Node Options
+  Node HTTP2.CreateServer.Options
 
 export
-convertOptions : {auto http2 : HTTP2} -> Options -> Node Options
+convertOptions : {auto http2 : HTTP2} -> HTTP2.CreateServer.Options -> Node HTTP2.CreateServer.Options
 convertOptions o = ffi_convertOptions
   o.maxDeflateDynamicTableSize
   o.maxSettings
@@ -181,4 +182,31 @@ convertOptions o = ffi_convertOptions
   o.maxSessionRejectedStreams
   (convertSettings o.settings)
   o.unknownProtocolTimeout
+
+namespace Command
+
+  public export
+  record Options where
+    constructor MkOptions
+    server: Node.HTTP2.CreateServer.Options
+    net: Node.Net.CreateServer.Options
+
+  export
+  defaultOptions : Command.Options
+  defaultOptions = MkOptions
+    { server = defaultOptions
+    , net = defaultOptions
+    }
+
+  %foreign "node:lambda: (server, net) => ({...net, ...server})"
+  ffi_convertOptions :
+    (server : Node HTTP2.CreateServer.Options)
+    -> (net : Node Net.CreateServer.Options)
+    -> Node Command.Options
+
+  export
+  convertOptions : {auto http2 : HTTP2} -> Command.Options -> Node Command.Options
+  convertOptions o = Command.ffi_convertOptions
+    (convertOptions o.server)
+    (convertOptions o.net)
 

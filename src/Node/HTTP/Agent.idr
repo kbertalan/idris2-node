@@ -7,30 +7,30 @@ export
 data Agent : Type where [external]
 
 public export
-data AgentScheduling
+data Scheduling
   = FIFO
   | LIFO
 
 export
-implementation Show AgentScheduling where
+implementation Show Scheduling where
   show = \case
     FIFO => "fifo"
     LIFO => "lifo"
 
 public export
-record AgentOptions where
-  constructor MkAgentOptions
+record Options where
+  constructor MkOptions
   keepAlive : Bool
   keepAliveMsecs : Int
   maxSockets : Int
   maxTotalSockets : Int
   maxFreeSockets : Int
-  scheduling : AgentScheduling
+  scheduling : Scheduling
 --  timeout : Int
 
 export
-defaultAgentOptions : AgentOptions
-defaultAgentOptions = MkAgentOptions
+defaultOptions : Options
+defaultOptions = MkOptions
   { keepAlive = False
   , keepAliveMsecs = 1000
   , maxSockets = 65535
@@ -57,21 +57,21 @@ defaultAgentOptions = MkAgentOptions
     scheduling
   })
   """
-ffi_nodeAgentOptions :
+ffi_convertOptions :
   (keepAlive : Bool) ->
   (keepAliveMsecs : Int) ->
   (maxSockets : Int) ->
   (maxTotalSockets : Int) ->
   (maxFreeSockets : Int) ->
   (scheduling : String) ->
-  Node AgentOptions
+  Node Options
 
 %foreign "node:lambda: (options) => new Agent(options)"
-ffi_newAgent : Node AgentOptions -> Agent
+ffi_newAgent : Node Options -> Agent
 
 export
-newAgent : AgentOptions -> Agent
-newAgent o = ffi_newAgent $ ffi_nodeAgentOptions
+newAgent : Options -> Agent
+newAgent o = ffi_newAgent $ ffi_convertOptions
   o.keepAlive
   o.keepAliveMsecs
   o.maxSockets

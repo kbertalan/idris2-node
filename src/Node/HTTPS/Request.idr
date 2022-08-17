@@ -7,48 +7,50 @@ import public Node.Net.Socket.Connect
 import public Node.TLS.Connect
 import public Node.TLS.CreateSecureContext
 
-public export
-record Options where
-  constructor MkOptions
-  requestOptions: RequestOptions Headers
-  tlsConnectOptions: Node.TLS.Connect.Options
-  tlsCreateSecureContextOptions: Node.TLS.CreateSecureContext.Options
-  socketConnectOptions: Maybe Node.Net.Socket.Connect.Options
+namespace Command
 
-export
-defaultOptions : HTTPS.Request.Options
-defaultOptions = MkOptions
-  { requestOptions = { protocol := "https:" } defaultRequestOptions
-  , tlsConnectOptions = defaultOptions
-  , tlsCreateSecureContextOptions = defaultOptions
-  , socketConnectOptions = Nothing
-  }
+  public export
+  record Options where
+    constructor MkOptions
+    request: Node.HTTP.Request.Options Headers
+    tls: Node.TLS.Connect.Options
+    context: Node.TLS.CreateSecureContext.Options
+    socket: Maybe Node.Net.Socket.Connect.Options
 
-%foreign """
-  node:lambda:
-  ( requestOptions
-  , tlsConnectOptions
-  , tlsCreateSecureContextOptions
-  , socketConnectOptions
-  ) => _keepDefined({
-    ..._maybe(socketConnectOptions),
-    ...tlsCreateSecureContextOptions,
-    ...tlsConnectOptions,
-    ...requestOptions
-  })
-  """
-ffi_convertOptions:
-  (requestOptions: Node $ RequestOptions Headers)
-  -> (tlsConnectOptions: Node Node.TLS.Connect.Options)
-  -> (tlsCreateSecureContextOptions: Node Node.TLS.CreateSecureContext.Options)
-  -> (socketConnectOptions: Maybe (Node Node.Net.Socket.Connect.Options))
-  -> Node Node.HTTPS.Request.Options
+  export
+  defaultOptions : HTTPS.Request.Command.Options
+  defaultOptions = MkOptions
+    { request = { protocol := "https:" } defaultOptions
+    , tls  = defaultOptions
+    , context = defaultOptions
+    , socket = Nothing
+    }
 
-export
-convertOptions : Node.HTTPS.Request.Options -> Node Node.HTTPS.Request.Options
-convertOptions o = ffi_convertOptions
-  (convertRequestOptions o.requestOptions)
-  (convertOptions o.tlsConnectOptions)
-  (convertOptions o.tlsCreateSecureContextOptions)
-  (convertOptions <$> o.socketConnectOptions)
+  %foreign """
+    node:lambda:
+    ( request
+    , tls
+    , context
+    , socket
+    ) => _keepDefined({
+      ..._maybe(socket),
+      ...context,
+      ...tls,
+      ...request
+    })
+    """
+  ffi_convertOptions:
+    (request: Node $ Node.HTTP.Request.Options Headers)
+    -> (tls: Node Node.TLS.Connect.Options)
+    -> (context: Node Node.TLS.CreateSecureContext.Options)
+    -> (socket: Maybe (Node Node.Net.Socket.Connect.Options))
+    -> Node Node.HTTPS.Request.Command.Options
+
+  export
+  convertOptions : Node.HTTPS.Request.Command.Options -> Node Node.HTTPS.Request.Command.Options
+  convertOptions o = ffi_convertOptions
+    (convertOptions o.request)
+    (convertOptions o.tls)
+    (convertOptions o.context)
+    (convertOptions <$> o.socket)
 
