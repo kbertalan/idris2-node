@@ -1,5 +1,6 @@
 module Node.Net.Socket.Connect
 
+import Node
 import Node.Internal.Support
 
 public export
@@ -57,9 +58,6 @@ defaultIPCOptions : (path : String) -> Options
 defaultIPCOptions path = IPC $ MkIPCOptions
   { path = path }
 
-export
-data NodeOptions : Type where [external]
-
 %foreign """
   node:lambda:
   ( port
@@ -90,7 +88,7 @@ ffi_convertTCPOptions :
   -> (noDelay: Bool)
   -> (keepAlive: Bool)
   -> (keepAliveInitialDelay: Int)
-  -> NodeOptions
+  -> Node Options
 
 %foreign """
   node:lambda:
@@ -101,10 +99,10 @@ ffi_convertTCPOptions :
   """
 ffi_convertIPCOptions :
   (path: String)
-  -> NodeOptions
+  -> Node Options
 
 export
-convertOptions : Options -> NodeOptions
+convertOptions : Options -> Node Options
 convertOptions = \case
   TCP o => ffi_convertTCPOptions
     o.port

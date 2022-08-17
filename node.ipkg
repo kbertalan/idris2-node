@@ -1,7 +1,8 @@
 package node
 
 modules =
-  Node.Console
+  Node
+  , Node.Console
   , Node.Console.Console
   , Node.Console.Static
   , Node.Console.Type

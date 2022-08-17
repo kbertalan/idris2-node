@@ -1,5 +1,6 @@
 module Node.HTTP2.Http2Server
 
+import Node
 import Node.Event.Internal
 import Node.HTTP2.Headers
 import Node.HTTP2.ServerHttp2Stream
@@ -16,7 +17,7 @@ export
 (.onStream) = on2 ffi_onStream
 
 %foreign "node:lambda: (server, options) => server.listen(options)"
-ffi_listen : Http2Server -> Listen.NodeOptions -> PrimIO ()
+ffi_listen : Http2Server -> Node Listen.Options -> PrimIO ()
 
 export
 (.listen) : HasIO io => Http2Server -> Listen.Options -> io ()

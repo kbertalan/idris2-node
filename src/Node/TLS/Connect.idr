@@ -1,5 +1,6 @@
 module Node.TLS.Connect
 
+import Node
 import Data.Buffer
 import Node.Internal.Support
 
@@ -38,9 +39,6 @@ defaultOptions = MkOptions
   , highWaterMark = Nothing
   }
 
-export
-data NodeOptions : Type where [external]
-
 %foreign """
   node:lambda:
   ( enableTrace
@@ -77,10 +75,10 @@ ffi_convertOptions:
   -> (session: Maybe Buffer)
   -> (minDHSize: Maybe Int)
   -> (highWaterMark: Maybe Int)
-  -> NodeOptions
+  -> Node Options
 
 export
-convertOptions : Options -> NodeOptions
+convertOptions : Options -> Node Options
 convertOptions o = ffi_convertOptions
   o.enableTrace
   o.host

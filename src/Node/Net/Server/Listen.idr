@@ -1,5 +1,6 @@
 module Node.Net.Server.Listen
 
+import Node
 import Node.Internal.Support
 
 public export
@@ -27,9 +28,6 @@ defaultOptions = MkOptions
   , writableAll = False
   , ipv6Only = False
   }
-
-export
-data NodeOptions : Type where [external]
 
 %foreign """
   node:lambda:
@@ -61,10 +59,10 @@ ffi_convertOptions :
   (readableAll : Bool) ->
   (writableAll : Bool) ->
   (ipv6Only : Bool) ->
-  NodeOptions
+  Node Options
 
 export
-convertOptions : Options -> NodeOptions
+convertOptions : Options -> Node Options
 convertOptions o = ffi_convertOptions
   o.port
   o.host

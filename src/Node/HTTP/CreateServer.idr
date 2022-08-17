@@ -1,5 +1,6 @@
 module Node.HTTP.CreateServer
 
+import Node
 import Node.Internal.Support
 
 public export
@@ -20,9 +21,6 @@ defaultOptions = MkOptions
   , keepAlive = False
   , keepAliveInitialDelay = 0
   }
-
-export
-data NodeOptions : Type where [external]
 
 %foreign """
   node:lambda:
@@ -45,10 +43,10 @@ ffi_convertOptions :
   (noDelay: Bool) ->
   (keepAlive: Bool) ->
   (keepAliveInitialDelay: Int) ->
-  NodeOptions
+  Node Options
 
 export
-convertOptions : Options -> NodeOptions
+convertOptions : Options -> Node Options
 convertOptions o = ffi_convertOptions
   o.insecureHTTPParser
   o.maxHeaderSize

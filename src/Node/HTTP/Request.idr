@@ -1,5 +1,6 @@
 module Node.HTTP.Request
 
+import Node
 import Node.Internal.Support
 import Node.HTTP.Agent
 import public Node.HTTP.Headers
@@ -52,9 +53,6 @@ defaultRequestOptions = MkRequestOptions
   , socketPath = Nothing
   , timeout = Nothing
   }
-
-export
-data NodeRequestOptions : Type where [external]
 
 %foreign """
   node:lambda:
@@ -114,10 +112,10 @@ ffi_convertRequestOptions :
   -> (setHost: Bool)
   -> (socketPath: Maybe String)
   -> (timeout: Maybe Int)
-  -> Request.NodeRequestOptions
+  -> Node $ Request.RequestOptions h
 
 export
-convertRequestOptions : RequestOptions h -> Request.NodeRequestOptions
+convertRequestOptions : RequestOptions h -> Node $ Request.RequestOptions h
 convertRequestOptions o = ffi_convertRequestOptions
   o.agent
   o.auth
@@ -150,9 +148,6 @@ defaultOptions = MkOptions
   , socketConnectOptions = Nothing
   }
 
-export
-data NodeOptions : Type where [external]
-
 %foreign """
   node:lambda:
   ( opts
@@ -163,12 +158,12 @@ data NodeOptions : Type where [external]
   })
   """
 ffi_convertOptions :
-  (requestOptions : Request.NodeRequestOptions)
-  -> (socketConnectOptions : Maybe Connect.NodeOptions)
-  -> Request.NodeOptions
+  (requestOptions : Node $ Request.RequestOptions Headers)
+  -> (socketConnectOptions : Maybe (Node Connect.Options))
+  -> Node Request.Options
 
 export
-convertOptions : Request.Options -> Request.NodeOptions
+convertOptions : Request.Options -> Node Request.Options
 convertOptions o = ffi_convertOptions
   (convertRequestOptions o.requestOptions)
   (convertOptions <$> o.socketConnectOptions)

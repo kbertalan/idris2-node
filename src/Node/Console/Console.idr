@@ -1,6 +1,7 @@
 module Node.Console.Console
 
 import Data.Buffer
+import Node
 import Node.Error
 import Node.Console.Type
 import Node.Stream.Writeable
@@ -14,18 +15,16 @@ data ColorMode
   | False
   | Auto
 
-data NodeColorMode : Type where [external]
-
 %foreign "node:lambda: () => true"
-ffi_colorMode_true : NodeColorMode
+ffi_colorMode_true : Node ColorMode
 
 %foreign "node:lambda: () => false"
-ffi_colorMode_false : NodeColorMode
+ffi_colorMode_false : Node ColorMode
 
 %foreign "node:lambda: () => 'auto'"
-ffi_colorMode_auto : NodeColorMode
+ffi_colorMode_auto : Node ColorMode
 
-convertColorMode : ColorMode -> NodeColorMode
+convertColorMode : ColorMode -> Node ColorMode
 convertColorMode = \case
   True => ffi_colorMode_true
   False => ffi_colorMode_false
@@ -51,9 +50,6 @@ defaultOptions stdout stderr = MkOptions
   , groupIndentation = 2
   }
 
-export
-data NodeOptions : Type where [external]
-
 %foreign """
   node:lambda:
   ( tyo
@@ -75,12 +71,12 @@ ffi_convertOptions :
   (stdout: out)
   -> (stderr: err)
   -> (ignoreErrors: Bool)
-  -> (colorMode: NodeColorMode)
+  -> (colorMode: Node ColorMode)
   -> (groupIndentation: Int)
-  -> NodeOptions
+  -> Node $ Options out err
 
 export
-convertOptions : Options out err -> NodeOptions
+convertOptions : Options out err -> Node $ Options out err
 convertOptions o = ffi_convertOptions
   o.stdout
   o.stderr

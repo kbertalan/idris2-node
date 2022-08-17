@@ -1,5 +1,7 @@
 module Node.HTTP2.Connect
 
+import Node
+
 public export
 record Options where
   constructor MkOptions
@@ -13,9 +15,6 @@ defaultOptions = MkOptions
   , rejectUnauthorized = True
   }
 
-export
-data NodeOptions : Type where [external]
-
 %foreign """
   node:lambda:
   (ca, rejectUnauthorized) => ({
@@ -23,10 +22,10 @@ data NodeOptions : Type where [external]
     rejectUnauthorized: rejectUnauthorized != 0
   })
   """
-ffi_nodeConnectOptions : String -> Bool -> NodeOptions
+ffi_nodeConnectOptions : String -> Bool -> Node Options
 
 export
-convertOptions : Connect.Options -> NodeOptions
+convertOptions : Connect.Options -> Node Options
 convertOptions (MkOptions ca rejectUnauthorized)
   = ffi_nodeConnectOptions ca rejectUnauthorized
 

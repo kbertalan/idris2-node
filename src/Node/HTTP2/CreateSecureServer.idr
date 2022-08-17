@@ -1,11 +1,9 @@
 module Node.HTTP2.CreateSecureServer
 
+import Node
 import Node.HTTP2.CreateServer
 import Node.HTTP2.Type
 import Node.Internal.Support
-
-%hide Node.HTTP2.CreateServer.Options
-%hide Node.HTTP2.CreateServer.NodeOptions
 
 public export
 record Options where
@@ -26,7 +24,7 @@ record Options where
   unknownProtocolTimeout: Int
 
 export
-defaultOptions : Options
+defaultOptions : CreateSecureServer.Options
 defaultOptions = MkOptions
   { allowHTTP1 = False
   , maxDeflateDynamicTableSize = 4096
@@ -43,9 +41,6 @@ defaultOptions = MkOptions
   , origins = []
   , unknownProtocolTimeout = 10000
   }
-
-export
-data NodeOptions : Type where [external]
 
 %foreign """
   node:lambda:
@@ -88,17 +83,17 @@ ffi_convertOptions :
   (maxHeaderListPairs: Int) ->
   (maxOutstandingPings: Int) ->
   (maxSendHeaderBlockLength: Maybe Int) ->
-  (paddingStrategy: NodePaddingStrategy) ->
+  (paddingStrategy: Node PaddingStrategy) ->
   (peerMaxConcurrentStreams: Int) ->
   (maxSessionInvalidFrames: Int) ->
   (maxSessionRejectedStreams: Int) ->
-  (settings: NodeSettings) ->
+  (settings: Node Settings) ->
   (origins: List String) ->
   (unknownProtocolTimeout: Int) ->
-  NodeOptions
+  Node CreateSecureServer.Options
 
 export
-convertOptions : {auto http2 : HTTP2} -> Options -> NodeOptions
+convertOptions : {auto http2 : HTTP2} -> CreateSecureServer.Options -> Node CreateSecureServer.Options
 convertOptions o = ffi_convertOptions
   o.allowHTTP1
   o.maxDeflateDynamicTableSize

@@ -1,5 +1,6 @@
 module Node.TLS.CreateServer
 
+import Node
 import Data.Buffer.Ext
 import Node.Internal.Support
 
@@ -31,9 +32,6 @@ defaultOptions = MkOptions
   , pskIdentityHint = Nothing
   }
 
-export
-data NodeOptions : Type where [external]
-
 %foreign """
   node:lambda:
   ( clientCertEngine
@@ -64,10 +62,10 @@ ffi_convertOptions :
   (sessionTimeout: Int) ->
   (ticketKeys: Maybe Buffer) ->
   (pskIdentityHint: Maybe String) ->
-  NodeOptions
+  Node Options
 
 export
-convertOptions : Options -> NodeOptions
+convertOptions : Options -> Node Options
 convertOptions o = ffi_convertOptions
   o.clientCertEngine
   o.enableTrace

@@ -1,5 +1,6 @@
 module Node.HTTP2.CreateServer
 
+import Node
 import Node.HTTP2.Type
 import Node.Internal.Support
 
@@ -9,20 +10,17 @@ data PaddingStrategy
   | Max
   | Aligned
 
-export
-data NodePaddingStrategy : Type where [external]
-
 %foreign "node:lambda: (http2) => http2.constants.PADDING_STRATEGY_NONE"
-ffi_paddingStrategy_None : {auto http2 : HTTP2} -> NodePaddingStrategy
+ffi_paddingStrategy_None : {auto http2 : HTTP2} -> Node PaddingStrategy
 
 %foreign "node:lambda: (http2) => http2.constants.PADDING_STRATEGY_MAX"
-ffi_paddingStrategy_Max : {auto http2 : HTTP2} -> NodePaddingStrategy
+ffi_paddingStrategy_Max : {auto http2 : HTTP2} -> Node PaddingStrategy
 
 %foreign "node:lambda: (http2) => http2.constants.PADDING_STRATEGY_ALIGNED"
-ffi_paddingStrategy_Aligned : {auto http2 : HTTP2} -> NodePaddingStrategy
+ffi_paddingStrategy_Aligned : {auto http2 : HTTP2} -> Node PaddingStrategy
 
 export
-convertPaddingStrategy : {auto http2 : HTTP2} -> PaddingStrategy -> NodePaddingStrategy
+convertPaddingStrategy : {auto http2 : HTTP2} -> PaddingStrategy -> Node PaddingStrategy
 convertPaddingStrategy = \case
   None => ffi_paddingStrategy_None
   Max => ffi_paddingStrategy_Max
@@ -51,9 +49,6 @@ defaultSettings = MkSettings
   , enableConnectProtocol = False
   }
 
-export
-data NodeSettings : Type where [external]
-
 %foreign """
   node:lambda:
   ( headerTableSize
@@ -81,10 +76,10 @@ ffi_convertSettings :
   (maxConcurrentStreams: Double) ->
   (maxHeaderListSize: Int) ->
   (enableConnectProtocol: Bool) ->
-  NodeSettings
+  Node Settings
 
 export
-convertSettings : Settings -> NodeSettings
+convertSettings : Settings -> Node Settings
 convertSettings s = ffi_convertSettings
   s.headerTableSize
   s.enablePush
@@ -127,9 +122,6 @@ defaultOptions = MkOptions
   , unknownProtocolTimeout = 10000
   }
 
-export
-data NodeOptions : Type where [external]
-
 %foreign """
   node:lambda:
   ( maxDeflateDynamicTableSize
@@ -166,16 +158,16 @@ ffi_convertOptions :
   (maxHeaderListPairs: Int) ->
   (maxOutstandingPings: Int) ->
   (maxSendHeaderBlockLength: Maybe Int) ->
-  (paddingStrategy: NodePaddingStrategy) ->
+  (paddingStrategy: Node PaddingStrategy) ->
   (peerMaxConcurrentStreams: Int) ->
   (maxSessionInvalidFrames: Int ) ->
   (maxSessionRejectedStreams: Int) ->
-  (settings: NodeSettings) ->
+  (settings: Node Settings) ->
   (unknownProtocolTimeout: Int) ->
-  NodeOptions
+  Node Options
 
 export
-convertOptions : {auto http2 : HTTP2} -> Options -> NodeOptions
+convertOptions : {auto http2 : HTTP2} -> Options -> Node Options
 convertOptions o = ffi_convertOptions
   o.maxDeflateDynamicTableSize
   o.maxSettings

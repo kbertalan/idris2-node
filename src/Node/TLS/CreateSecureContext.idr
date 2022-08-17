@@ -1,5 +1,6 @@
 module Node.TLS.CreateSecureContext
 
+import Node
 import Data.Buffer
 import Node.Internal.Support
 
@@ -53,9 +54,6 @@ defaultOptions = MkOptions
   , ticketKeys = Nothing
   , sessionTimeout = 300
   }
-
-export
-data NodeOptions : Type where [external]
 
 %foreign """
   node:lambda:
@@ -126,10 +124,10 @@ ffi_convertOptions:
   (sessionIdContext: Maybe String) ->
   (ticketKeys: Maybe Buffer) ->
   (sessionTimeout: Int) ->
-  NodeOptions
+  Node Options
 
 export
-convertOptions : Options -> NodeOptions
+convertOptions : Options -> Node Options
 convertOptions o = ffi_convertOptions
   o.ca
   o.cert

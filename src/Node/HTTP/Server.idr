@@ -1,5 +1,6 @@
 module Node.HTTP.Server
 
+import Node
 import Node.Event.Internal
 import Node.HTTP.IncomingMessage
 import Node.HTTP.ServerResponse
@@ -17,7 +18,7 @@ export
 (.onRequest) = on2 ffi_onRequest
 
 %foreign "node:lambda: (server, options) => server.listen(options)"
-ffi_listen : Server -> Listen.NodeOptions -> PrimIO ()
+ffi_listen : Server -> Node Listen.Options -> PrimIO ()
 
 export
 (.listen) : HasIO io => Server -> Listen.Options -> io ()

@@ -1,5 +1,6 @@
 module Node.Net.CreateServer
 
+import Node
 import Node.Internal.Support
 
 public export
@@ -20,9 +21,6 @@ defaultOptions = MkOptions
   , keepAlive = False
   , keepAliveInitialDelay = 0
   }
-
-export
-data NodeOptions : Type where [external]
 
 %foreign """
   node:lambda:
@@ -45,10 +43,10 @@ ffi_convertOptions :
   (noDelay : Bool) ->
   (keepAlive : Bool) ->
   (keepAliveInitialDelay : Int) ->
-  CreateServer.NodeOptions
+  Node CreateServer.Options
 
 export
-convertOptions : CreateServer.Options -> CreateServer.NodeOptions
+convertOptions : CreateServer.Options -> Node CreateServer.Options
 convertOptions o = ffi_convertOptions
   o.allowHalfOpen
   o.pauseOnConnect

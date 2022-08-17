@@ -1,5 +1,6 @@
 module Node.HTTP.Static
 
+import Node
 import Node.HTTP.CreateServer
 import Node.HTTP.ClientRequest
 import Node.HTTP.IncomingMessage
@@ -8,14 +9,14 @@ import Node.HTTP.Server
 import Node.HTTP.Type
 
 %foreign "node:lambda: (http, url, opts, cb) => http.get(url, opts, (res) => { cb(res)() })"
-ffi_get : HTTP -> String -> Request.NodeOptions -> (IncomingMessage -> PrimIO ()) -> PrimIO ClientRequest
+ffi_get : HTTP -> String -> Node Request.Options -> (IncomingMessage -> PrimIO ()) -> PrimIO ClientRequest
 
 export
 (.get) : HasIO io => HTTP -> String -> Request.Options -> (IncomingMessage -> IO ()) -> io ClientRequest
 (.get) http url opts cb = primIO $ ffi_get http url (convertOptions opts) $ \res => toPrim $ cb res
 
 %foreign "node:lambda: (http, url, opts, cb) => http.request(url, opts, (res) => { cb(res)() })"
-ffi_request : HTTP -> String -> Request.NodeOptions -> (IncomingMessage -> PrimIO ()) -> PrimIO ClientRequest
+ffi_request : HTTP -> String -> Node Request.Options -> (IncomingMessage -> PrimIO ()) -> PrimIO ClientRequest
 
 export
 (.request) : HasIO io => HTTP -> String -> Request.Options -> (IncomingMessage -> IO ()) -> io ClientRequest
@@ -26,7 +27,7 @@ export
 (.post) http url opts cb = http.request url ({ requestOptions.method := "POST" } opts) cb
 
 %foreign "node:lambda: (http, options) => http.createServer(options)"
-ffi_createServer : HTTP -> CreateServer.NodeOptions -> PrimIO Server
+ffi_createServer : HTTP -> Node CreateServer.Options -> PrimIO Server
 
 export
 (.createServer) : HasIO io => HTTP -> CreateServer.Options -> io Server

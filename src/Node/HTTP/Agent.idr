@@ -1,5 +1,6 @@
 module Node.HTTP.Agent
 
+import Node
 import Node.Internal.Support
 
 export
@@ -38,8 +39,6 @@ defaultAgentOptions = MkAgentOptions
   , scheduling = LIFO
   }
 
-data NodeAgentOptions : Type where [external]
-
 %foreign """
   node:lambda:
   (
@@ -65,10 +64,10 @@ ffi_nodeAgentOptions :
   (maxTotalSockets : Int) ->
   (maxFreeSockets : Int) ->
   (scheduling : String) ->
-  NodeAgentOptions
+  Node AgentOptions
 
 %foreign "node:lambda: (options) => new Agent(options)"
-ffi_newAgent : NodeAgentOptions -> Agent
+ffi_newAgent : Node AgentOptions -> Agent
 
 export
 newAgent : AgentOptions -> Agent

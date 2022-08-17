@@ -1,5 +1,6 @@
 module Node.HTTPS.Request
 
+import Node
 import public Node.HTTP.Headers
 import public Node.HTTP.Request
 import public Node.Net.Socket.Connect
@@ -23,9 +24,6 @@ defaultOptions = MkOptions
   , socketConnectOptions = Nothing
   }
 
-export
-data NodeOptions : Type where [external]
-
 %foreign """
   node:lambda:
   ( requestOptions
@@ -40,14 +38,14 @@ data NodeOptions : Type where [external]
   })
   """
 ffi_convertOptions:
-  (requestOptions: NodeRequestOptions)
-  -> (tlsConnectOptions: Node.TLS.Connect.NodeOptions)
-  -> (tlsCreateSecureContextOptions: Node.TLS.CreateSecureContext.NodeOptions)
-  -> (socketConnectOptions: Maybe Node.Net.Socket.Connect.NodeOptions)
-  -> Node.HTTPS.Request.NodeOptions
+  (requestOptions: Node $ RequestOptions Headers)
+  -> (tlsConnectOptions: Node Node.TLS.Connect.Options)
+  -> (tlsCreateSecureContextOptions: Node Node.TLS.CreateSecureContext.Options)
+  -> (socketConnectOptions: Maybe (Node Node.Net.Socket.Connect.Options))
+  -> Node Node.HTTPS.Request.Options
 
 export
-convertOptions : Node.HTTPS.Request.Options -> Node.HTTPS.Request.NodeOptions
+convertOptions : Node.HTTPS.Request.Options -> Node Node.HTTPS.Request.Options
 convertOptions o = ffi_convertOptions
   (convertRequestOptions o.requestOptions)
   (convertOptions o.tlsConnectOptions)
