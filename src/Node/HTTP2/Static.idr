@@ -26,6 +26,6 @@ export
 ffi_connect : HTTP2 -> String -> Node Connect.Options -> PrimIO ClientHttp2Session
 
 export
-(.connect) : HTTP2 -> String -> Connect.Options -> IO ClientHttp2Session
+(.connect) : HasIO io => HTTP2 -> String -> Connect.Options -> io ClientHttp2Session
 (.connect) http2 authority connectOptions = primIO $ ffi_connect http2 authority $ convertOptions connectOptions
 

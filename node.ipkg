@@ -43,6 +43,7 @@ modules =
   , Node.HTTP2.Type
   , Node.Internal.Support
   , Node.JS.Misc
+  , Node.JS.IO
   , Node.JS.Std.JSON
   , Node.JS.Std.URI
   , Node.Net
@@ -64,7 +65,7 @@ modules =
   , Node.TLS.CreateServer
   , Data.Buffer.Ext
 
-depends = promise
+-- depends = promise
 
 opts      = "--codegen node"
 
