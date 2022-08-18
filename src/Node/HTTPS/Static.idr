@@ -14,21 +14,21 @@ export
 (.createServer) : HasIO io => HTTPS -> HTTPS.CreateServer.Command.Options -> io HTTPS.Server
 (.createServer) https opts = primIO $ ffi_createServer https $ convertOptions opts
 
-%foreign "node:lambda: (https, url, opts, cb) => https.get(url, opts, (res) => { cb(res)() })"
-ffi_get : HTTPS -> String -> Node Node.HTTPS.Request.Command.Options -> (IncomingMessage -> PrimIO ()) -> PrimIO ClientRequest
+%foreign "node:lambda: (https, url, t, opts, cb) => https.get(url, opts, (res) => { cb(res)() })"
+ffi_get : HTTPS -> String -> (t : SocketType) -> Node (Node.HTTPS.Request.Command.Options t) -> (IncomingMessage -> PrimIO ()) -> PrimIO ClientRequest
 
 export
-(.get) : HasIO io => HTTPS -> String -> Node.HTTPS.Request.Command.Options -> (IncomingMessage -> IO ()) -> io ClientRequest
-(.get) https url opts cb = primIO $ ffi_get https url (convertOptions opts) $ \res => toPrim $ cb res
+(.get) : HasIO io => HTTPS -> String -> { auto t : SocketType } -> Node.HTTPS.Request.Command.Options t -> (IncomingMessage -> IO ()) -> io ClientRequest
+(.get) https url {t} opts cb = primIO $ ffi_get https url t (convertOptions t opts) $ \res => toPrim $ cb res
 
-%foreign "node:lambda: (https, url, opts, cb) => https.request(url, opts, (res) => { cb(res)() })"
-ffi_request : HTTPS -> String -> Node Node.HTTPS.Request.Command.Options -> (IncomingMessage -> PrimIO ()) -> PrimIO ClientRequest
-
-export
-(.request) : HasIO io => HTTPS -> String -> Node.HTTPS.Request.Command.Options -> (IncomingMessage -> IO ()) -> io ClientRequest
-(.request) https url opts cb = primIO $ ffi_request https url (convertOptions opts) $ \res => toPrim $ cb res
+%foreign "node:lambda: (https, url, t, opts, cb) => https.request(url, opts, (res) => { cb(res)() })"
+ffi_request : HTTPS -> String -> (t : SocketType) -> Node (Node.HTTPS.Request.Command.Options t) -> (IncomingMessage -> PrimIO ()) -> PrimIO ClientRequest
 
 export
-(.post) : HasIO io => HTTPS -> String -> Node.HTTPS.Request.Command.Options -> (IncomingMessage -> IO ()) -> io ClientRequest
+(.request) : HasIO io => HTTPS -> String -> { auto t : SocketType } -> Node.HTTPS.Request.Command.Options t -> (IncomingMessage -> IO ()) -> io ClientRequest
+(.request) https url {t} opts cb = primIO $ ffi_request https url t (convertOptions t opts) $ \res => toPrim $ cb res
+
+export
+(.post) : HasIO io => HTTPS -> String -> {auto t : SocketType} -> (Node.HTTPS.Request.Command.Options t) -> (IncomingMessage -> IO ()) -> io ClientRequest
 (.post) https url opts cb = https.request url ({ request.method := "POST" } opts) cb
 

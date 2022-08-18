@@ -17,7 +17,7 @@ main = do
   Right cert <- readFile "./build/certs/cert.pem"
     | Left e => putStrLn "could not read cert file: \{show e}"
 
-  Right _ <- runJSIO $ do
+  Right _ <- runJSIO $ catchIO $ do
       let port = 3443
       https <- HTTPS.require
       let opts = { context.key := [key]
@@ -28,7 +28,7 @@ main = do
       listen'
       server.onError $ \err =>
         if err.code == SystemError EADDRINUSE
-          then ignore $ setTimeout (ignore $ runJSIO $ server.close >> listen') 500
+          then ignore $ setTimeout (server.close >> listen') 500
           else putStrLn "could not start server: \{err.message}"
       server.onRequest $ \req, res => do
         putStrLn "server processing request"

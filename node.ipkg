@@ -50,7 +50,12 @@ modules =
   , Node.Net.CreateServer
   , Node.Net.Server
   , Node.Net.Server.Listen
+  , Node.Net.Socket
+  , Node.Net.Socket.Address
   , Node.Net.Socket.Connect
+  , Node.Net.Socket.Type
+  , Node.Net.Static
+  , Node.Net.Type
   , Node.Process
   , Node.Process.Static
   , Node.Process.Type

@@ -5,6 +5,7 @@ import public Node.HTTP.ClientRequest
 import public Node.HTTP.CreateServer
 import public Node.HTTP.Headers
 import public Node.HTTP.IncomingMessage
+import public Node.HTTP.Request
 import public Node.HTTP.Server
 import public Node.HTTP.ServerResponse
 import public Node.HTTP.Static

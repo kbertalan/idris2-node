@@ -2,6 +2,7 @@ module Node.Net.Socket.Connect
 
 import Node
 import Node.Internal.Support
+import Node.Net.Socket.Type
 
 public export
 data IpAddressFamily
@@ -36,13 +37,13 @@ record IPCOptions where
   path: String
 
 public export
-data Options
-  = TCP TCPOptions
-  | IPC IPCOptions
+options : SocketType -> Type
+options TCP = TCPOptions
+options IPC = IPCOptions
 
 export
-defaultTCPOptions : (port : Int) -> Options
-defaultTCPOptions port = TCP $ MkTCPOptons
+defaultTCPOptions : (port : Int) -> options TCP
+defaultTCPOptions port = MkTCPOptons
   { port = port
   , host = Nothing
   , localAddress = Nothing
@@ -54,8 +55,8 @@ defaultTCPOptions port = TCP $ MkTCPOptons
   }
 
 export
-defaultIPCOptions : (path : String) -> Options
-defaultIPCOptions path = IPC $ MkIPCOptions
+defaultIPCOptions : (path : String) -> options IPC
+defaultIPCOptions path = MkIPCOptions
   { path = path }
 
 %foreign """
@@ -88,7 +89,7 @@ ffi_convertTCPOptions :
   -> (noDelay: Bool)
   -> (keepAlive: Bool)
   -> (keepAliveInitialDelay: Int)
-  -> Node Options
+  -> Node $ options TCP
 
 %foreign """
   node:lambda:
@@ -99,12 +100,11 @@ ffi_convertTCPOptions :
   """
 ffi_convertIPCOptions :
   (path: String)
-  -> Node Options
+  -> Node $ options IPC
 
 export
-convertOptions : Options -> Node Options
-convertOptions = \case
-  TCP o => ffi_convertTCPOptions
+convertOptions : (t : SocketType) -> options t -> Node $ options t
+convertOptions TCP o = ffi_convertTCPOptions
     o.port
     o.host
     o.localAddress
@@ -113,6 +113,5 @@ convertOptions = \case
     o.noDelay
     o.keepAlive
     o.keepAliveInitialDelay
-  IPC o => ffi_convertIPCOptions
-    o.path
+convertOptions IPC o = ffi_convertIPCOptions o.path
 

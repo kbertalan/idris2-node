@@ -4,7 +4,8 @@ import Node
 import Node.Internal.Support
 import Node.HTTP.Agent
 import public Node.HTTP.Headers
-import Node.Net.Socket.Connect
+import public Node.Net.Socket.Type
+import public Node.Net.Socket.Connect
 
 public export
 record Options h where
@@ -138,13 +139,13 @@ convertOptions o = ffi_convertOptions
 namespace Command
 
   public export
-  record Options where
+  record Options (t : SocketType) where
     constructor MkOptions
     request: Request.Options Headers
-    socket: Maybe Connect.Options
+    socket: Maybe $ Connect.options t
 
   export
-  defaultOptions : Command.Options
+  defaultOptions : {auto t : SocketType } -> Command.Options t
   defaultOptions = MkOptions
     { request = defaultOptions
     , socket = Nothing
@@ -152,7 +153,8 @@ namespace Command
 
   %foreign """
     node:lambda:
-    ( request
+    ( ty
+    , request
     , socket
     ) => ({
       ..._maybe(socket),
@@ -161,12 +163,12 @@ namespace Command
     """
   ffi_convertOptions :
     (request : Node $ Request.Options Headers)
-    -> (socket : Maybe (Node Connect.Options))
-    -> Node Command.Options
+    -> (socket : Maybe AnyPtr)
+    -> Node $ Command.Options t
 
   export
-  convertOptions : Command.Options -> Node Command.Options
-  convertOptions o = ffi_convertOptions
+  convertOptions : (t : SocketType) -> Command.Options t -> Node $ Command.Options t
+  convertOptions t o = ffi_convertOptions
     (convertOptions o.request)
-    (convertOptions <$> o.socket)
+    (believe_me $ convertOptions t <$> o.socket)
 

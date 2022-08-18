@@ -4,7 +4,6 @@ import Data.Buffer.Ext
 import Node.Error
 import Node.HTTP2
 import Node.JS.IO
-import Node.Net.Server.Listen
 import Node.Timers
 import Promise
 import System.File
@@ -17,7 +16,7 @@ main = do
   Right cert <- readFile "./build/certs/cert.pem"
     | Left e => putStrLn "could not read cert file: \{show e}"
 
-  Right _ <- runJSIO $ do
+  Right _ <- runJSIO $ catchIO $ do
       let port = 3443
       http2 <- HTTP2.require
       let opts = { context.key := [key]
@@ -36,7 +35,7 @@ main = do
       listen'
       server.onError $ \err =>
         if err.code == SystemError EADDRINUSE
-          then ignore $ setTimeout (ignore $ runJSIO $ server.close >> listen') 500
+          then ignore $ setTimeout (server.close >> listen') 500
           else putStrLn "could not start server: \{err.message}"
 
       server.onListening $ do

@@ -4,21 +4,22 @@ import Node
 import public Node.HTTP.Headers
 import public Node.HTTP.Request
 import public Node.Net.Socket.Connect
+import public Node.Net.Socket.Type
 import public Node.TLS.Connect
 import public Node.TLS.CreateSecureContext
 
 namespace Command
 
   public export
-  record Options where
+  record Options (t : SocketType) where
     constructor MkOptions
     request: Node.HTTP.Request.Options Headers
     tls: Node.TLS.Connect.Options
     context: Node.TLS.CreateSecureContext.Options
-    socket: Maybe Node.Net.Socket.Connect.Options
+    socket: Maybe $ Node.Net.Socket.Connect.options t
 
   export
-  defaultOptions : HTTPS.Request.Command.Options
+  defaultOptions : {auto t : SocketType} -> HTTPS.Request.Command.Options t
   defaultOptions = MkOptions
     { request = { protocol := "https:" } defaultOptions
     , tls  = defaultOptions
@@ -28,7 +29,8 @@ namespace Command
 
   %foreign """
     node:lambda:
-    ( request
+    ( ty
+    , request
     , tls
     , context
     , socket
@@ -43,14 +45,14 @@ namespace Command
     (request: Node $ Node.HTTP.Request.Options Headers)
     -> (tls: Node Node.TLS.Connect.Options)
     -> (context: Node Node.TLS.CreateSecureContext.Options)
-    -> (socket: Maybe (Node Node.Net.Socket.Connect.Options))
-    -> Node Node.HTTPS.Request.Command.Options
+    -> (socket: Maybe AnyPtr)
+    -> Node $ Node.HTTPS.Request.Command.Options t
 
   export
-  convertOptions : Node.HTTPS.Request.Command.Options -> Node Node.HTTPS.Request.Command.Options
-  convertOptions o = ffi_convertOptions
+  convertOptions : (t : SocketType) -> Node.HTTPS.Request.Command.Options t -> Node $ Node.HTTPS.Request.Command.Options t
+  convertOptions t o = ffi_convertOptions
     (convertOptions o.request)
     (convertOptions o.tls)
     (convertOptions o.context)
-    (convertOptions <$> o.socket)
+    (believe_me $ convertOptions t <$> o.socket)
 
