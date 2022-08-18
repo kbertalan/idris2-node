@@ -41,7 +41,7 @@ record Options (out : Type) (err : Type) where
   groupIndentation: Int
 
 export
-defaultOptions : Writeable Buffer NodeError out => Writeable Buffer NodeError err => out -> err -> Options out err
+defaultOptions : WriteableClass Buffer NodeError out => WriteableClass Buffer NodeError err => out -> err -> Options out err
 defaultOptions stdout stderr = MkOptions
   { stdout = stdout
   , stderr = stderr

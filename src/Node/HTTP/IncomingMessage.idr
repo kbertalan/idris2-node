@@ -9,7 +9,7 @@ export
 data IncomingMessage : Type where [external]
 
 public export
-implementation Readable Buffer NodeError IncomingMessage where
+implementation ReadableClass Buffer NodeError IncomingMessage where
 
 export
 %foreign "node:lambda: req => req.headers"

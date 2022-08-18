@@ -8,5 +8,5 @@ export
 data ClientRequest : Type where [external]
 
 export
-implementation Writeable Buffer NodeError ClientRequest where
+implementation WriteableClass Buffer NodeError ClientRequest where
 

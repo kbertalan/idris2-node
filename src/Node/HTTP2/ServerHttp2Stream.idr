@@ -9,10 +9,10 @@ export
 data ServerHttp2Stream : Type where [external]
 
 public export
-implementation Readable Buffer NodeError ServerHttp2Stream where
+implementation ReadableClass Buffer NodeError ServerHttp2Stream where
 
 public export
-implementation Writeable Buffer NodeError ServerHttp2Stream where
+implementation WriteableClass Buffer NodeError ServerHttp2Stream where
 
 %foreign "node:lambda: (stream, headers) => stream.respond(headers)"
 ffi_respond : ServerHttp2Stream -> Headers -> PrimIO ()

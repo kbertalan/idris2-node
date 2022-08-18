@@ -36,14 +36,14 @@ writeableOnFinish = on0 ffi_onFinish
 ffi_onPipe : a -> (r -> PrimIO ()) -> PrimIO ()
 
 export
-writeableOnPipe : HasIO io => Readable d e r => a -> (r -> IO ()) -> io ()
+writeableOnPipe : HasIO io => ReadableClass d e r => a -> (r -> IO ()) -> io ()
 writeableOnPipe = on1 ffi_onPipe
 
 %foreign nodeOn1 "unpipe"
 ffi_onUnpipe : a -> (r -> PrimIO ()) -> PrimIO ()
 
 export
-writeableOnUnpipe : HasIO io => Readable d e r => a -> (r -> IO ()) -> io ()
+writeableOnUnpipe : HasIO io => ReadableClass d e r => a -> (r -> IO ()) -> io ()
 writeableOnUnpipe = on1 ffi_onUnpipe
 
 %foreign "node:lambda: (tya, writeable) => writeable.cork()"
@@ -76,7 +76,7 @@ writeableUncork a = primIO $ ffi_uncork a
 
 ||| Writable stream
 public export
-interface Writeable d e w | w where
+interface WriteableClass d e w | w where
   (.onClose) : HasIO io => w -> IO () -> io ()
   (.onClose) = writeableOnClose
   (.onDrain) : HasIO io => w -> IO () -> io ()
@@ -85,9 +85,9 @@ interface Writeable d e w | w where
   (.onError) = writeableOnError
   (.onFinish) : HasIO io => w -> IO () -> io ()
   (.onFinish) = writeableOnFinish
-  (.onPipe) : HasIO io => Readable d e r => w -> (r -> IO ()) -> io ()
+  (.onPipe) : HasIO io => ReadableClass d e r => w -> (r -> IO ()) -> io ()
   (.onPipe) = writeableOnPipe
-  (.onUnpipe) : HasIO io => Readable d e r => w -> (r -> IO ()) -> io ()
+  (.onUnpipe) : HasIO io => ReadableClass d e r => w -> (r -> IO ()) -> io ()
   (.onUnpipe) = writeableOnUnpipe
   (.cork) : HasIO io => w -> io ()
   (.cork) = writeableCork

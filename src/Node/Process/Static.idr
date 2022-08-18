@@ -8,7 +8,7 @@ export
 data StdErr : Type where [external]
 
 public export
-implementation Writeable d NodeError StdErr where
+implementation WriteableClass d NodeError StdErr where
 
 export
 %foreign "node:lambda: (process) => process.stderr"
@@ -18,7 +18,7 @@ export
 data StdIn : Type where [external]
 
 public export
-implementation Readable d NodeError StdIn where
+implementation ReadableClass d NodeError StdIn where
 
 export
 %foreign "node:lambda: (process) => process.stdin"
@@ -28,7 +28,7 @@ export
 data StdOut : Type where [external]
 
 public export
-implementation Writeable d NodeError StdOut where
+implementation WriteableClass d NodeError StdOut where
 
 export
 %foreign "node:lambda: (process) => process.stdout"
