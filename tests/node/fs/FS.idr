@@ -5,7 +5,7 @@ import Data.String
 import Node.FS
 import Promise
 
-printStream : ReadableClass Buffer NodeError r => String -> r -> Promise () IO ()
+printStream : ReadableClass Buffer Error r => String -> r -> Promise () IO ()
 printStream name stream = promise $ \resolve', reject' => do
   stream.onPause $ putStrLn "\{name} paused"
   stream.onResume $ putStrLn "\{name} resumed"
@@ -15,7 +15,7 @@ printStream name stream = promise $ \resolve', reject' => do
   stream.onData $ putStrLn . unlines . map ("\{name} data: " <+>) . lines . show
   stream.onEnd $ putStrLn "\{name} ended"
   stream.onError $ \err => do
-    putStrLn "\{name} error: \{message err}"
+    putStrLn "\{name} error: \{err.message}"
     reject' ()
   stream.pause
   stream.resume

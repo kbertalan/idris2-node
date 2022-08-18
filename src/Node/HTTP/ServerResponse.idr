@@ -9,7 +9,7 @@ export
 data ServerResponse : Type where [external]
 
 public export
-implementation WriteableClass Buffer NodeError ServerResponse where
+implementation WriteableClass Buffer Error ServerResponse where
 
 %foreign "node:lambda: (res, status, headers) => res.writeHead(status, headers)"
 ffi_writeHead : ServerResponse -> Int -> Headers -> PrimIO ()

@@ -11,8 +11,8 @@ import Node.Stream.Writeable
 ffi_newConsole : ConsoleModule -> Node (Options out err) -> PrimIO Console
 
 export
-(.newConsole) : WriteableClass Buffer NodeError out
-  => WriteableClass Buffer NodeError err
+(.newConsole) : WriteableClass Buffer Error out
+  => WriteableClass Buffer Error err
   => HasIO io
   => ConsoleModule
   -> Console.Options out err

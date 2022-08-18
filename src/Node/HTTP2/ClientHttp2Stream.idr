@@ -32,7 +32,7 @@ onData = on1 ffi_onData
 ffi_onError : a -> (e -> PrimIO ()) -> PrimIO ()
 
 export
-onError : HasIO io => ClientHttp2Stream -> (NodeError -> IO ()) -> io ()
+onError : HasIO io => ClientHttp2Stream -> (Error -> IO ()) -> io ()
 onError = on1 ffi_onError
 
 %foreign nodeOn0 "end"

@@ -580,20 +580,32 @@ fromString str = case str of
     a => OtherCode a
 
 export
-data NodeError : Type where [external]
+%foreign "node:lambda: (tye, e) => e.message"
+message : e -> String
 
 export
-%foreign "node:lambda: e => e.message"
-message : NodeError -> String
+%foreign "node:lambda: (tye, e) => e.stack"
+stack : e -> String
+
+%foreign "node:lambda: (tye, e) => e.code"
+ffi_code : e -> String
 
 export
-%foreign "node:lambda: e => e.stack"
-stack : NodeError -> String
-
-%foreign "node:lambda: e => e.code"
-ffi_code : NodeError -> String
-
-export
-code : NodeError -> Code
+code : e -> Code
 code = fromString . ffi_code
+
+public export
+interface ErrorClass e where
+  (.message) : e -> String
+  (.message) = message
+  (.stack) : e -> String
+  (.stack) = stack
+  (.code) : e -> Code
+  (.code) = code
+
+export
+data Error : Type where [external]
+
+public export
+implementation ErrorClass Error where
 

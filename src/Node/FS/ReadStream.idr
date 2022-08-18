@@ -8,5 +8,5 @@ export
 data ReadStream : Type where [external]
 
 export
-implementation ReadableClass Buffer NodeError ReadStream where
+implementation ReadableClass Buffer Error ReadStream where
 

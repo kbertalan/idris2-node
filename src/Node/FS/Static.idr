@@ -28,10 +28,10 @@ export
     }
   }
   """
-ffi_statSync : FS -> {r: StatsReturnType} -> (bigint : Bool) -> String -> PrimIO (Either NodeError $ Stats r)
+ffi_statSync : FS -> {r: StatsReturnType} -> (bigint : Bool) -> String -> PrimIO (Either Error $ Stats r)
 
 export
-(.statSync) : HasIO io => (fs : FS) -> (r : StatsReturnType) -> String -> io (Either NodeError $ Stats r)
+(.statSync) : HasIO io => (fs : FS) -> (r : StatsReturnType) -> String -> io (Either Error $ Stats r)
 (.statSync) fs r path = primIO $ ffi_statSync fs (isBigInt r) path
 
 %foreign """
@@ -44,9 +44,9 @@ export
     )
   }
   """
-ffi_stat : FS -> {r: StatsReturnType} -> (bigint : Bool) -> String -> (Either NodeError (Stats r) -> PrimIO()) -> PrimIO ()
+ffi_stat : FS -> {r: StatsReturnType} -> (bigint : Bool) -> String -> (Either Error (Stats r) -> PrimIO()) -> PrimIO ()
 
 export
-(.stat) : HasIO io => (fs : FS) -> (r: StatsReturnType) -> String -> (Either NodeError (Stats r) -> IO ()) -> io ()
+(.stat) : HasIO io => (fs : FS) -> (r: StatsReturnType) -> String -> (Either Error (Stats r) -> IO ()) -> io ()
 (.stat) fs r path cb = primIO $ ffi_stat fs (isBigInt r) path $ \either => toPrim $ cb either
 

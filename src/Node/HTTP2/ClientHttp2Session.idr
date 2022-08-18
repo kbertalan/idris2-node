@@ -45,6 +45,6 @@ export
 ffi_onError : a -> (b -> PrimIO ()) -> PrimIO ()
 
 export
-(.onError) : HasIO io => ClientHttp2Session -> (NodeError -> IO ()) -> io ()
+(.onError) : HasIO io => ClientHttp2Session -> (Error -> IO ()) -> io ()
 (.onError) = on1 ffi_onError
 
