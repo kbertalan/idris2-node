@@ -4,14 +4,14 @@ import Node
 import public Node.HTTP.ClientRequest
 import Node.HTTPS.CreateServer
 import public Node.HTTPS.Request
-import Node.HTTPS.Server
+import Node.HTTPS.Server as HTTPS
 import Node.HTTPS.Type
 
 %foreign "node:lambda: (https, opts) => https.createServer(opts)"
-ffi_createServer : HTTPS -> Node HTTPS.CreateServer.Command.Options -> PrimIO Server
+ffi_createServer : HTTPS -> Node HTTPS.CreateServer.Command.Options -> PrimIO HTTPS.Server
 
 export
-(.createServer) : HasIO io => HTTPS -> HTTPS.CreateServer.Command.Options -> io Server
+(.createServer) : HasIO io => HTTPS -> HTTPS.CreateServer.Command.Options -> io HTTPS.Server
 (.createServer) https opts = primIO $ ffi_createServer https $ convertOptions opts
 
 %foreign "node:lambda: (https, url, opts, cb) => https.get(url, opts, (res) => { cb(res)() })"

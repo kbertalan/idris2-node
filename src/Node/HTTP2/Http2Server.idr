@@ -4,10 +4,13 @@ import Node
 import Node.Event.Internal
 import Node.HTTP2.Headers
 import Node.HTTP2.ServerHttp2Stream
-import Node.Net.Server.Listen
+import public Node.Net.Server
 
 export
 data Http2Server : Type where [external]
+
+export
+implementation ServerClass Http2Server where
 
 %foreign nodeOn2 "stream"
 ffi_onStream : a -> (b -> c -> PrimIO ()) -> PrimIO ()
@@ -15,18 +18,4 @@ ffi_onStream : a -> (b -> c -> PrimIO ()) -> PrimIO ()
 export
 (.onStream) : HasIO io => Http2Server -> (ServerHttp2Stream -> Headers -> IO()) -> io ()
 (.onStream) = on2 ffi_onStream
-
-%foreign "node:lambda: (server, options) => server.listen(options)"
-ffi_listen : Http2Server -> Node Listen.Options -> PrimIO ()
-
-export
-(.listen) : HasIO io => Http2Server -> Listen.Options -> io ()
-(.listen) server options = primIO $ ffi_listen server $ convertOptions options
-
-%foreign "node:lambda: server => server.close()"
-ffi_close : Http2Server -> PrimIO ()
-
-export
-(.close) : HasIO io => Http2Server -> io ()
-(.close) server = primIO $ ffi_close server
 

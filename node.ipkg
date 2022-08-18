@@ -48,6 +48,7 @@ modules =
   , Node.JS.Std.URI
   , Node.Net
   , Node.Net.CreateServer
+  , Node.Net.Server
   , Node.Net.Server.Listen
   , Node.Net.Socket.Connect
   , Node.Process

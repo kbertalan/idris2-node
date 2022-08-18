@@ -5,7 +5,7 @@ import Node.HTTP.CreateServer
 import Node.HTTP.ClientRequest
 import Node.HTTP.IncomingMessage
 import public Node.HTTP.Request
-import Node.HTTP.Server
+import Node.HTTP.Server as HTTP
 import Node.HTTP.Type
 
 %foreign "node:lambda: (http, url, opts, cb) => http.get(url, opts, (res) => { cb(res)() })"
@@ -27,9 +27,9 @@ export
 (.post) http url opts cb = http.request url ({ request.method := "POST" } opts) cb
 
 %foreign "node:lambda: (http, options) => http.createServer(options)"
-ffi_createServer : HTTP -> Node CreateServer.Options -> PrimIO Server
+ffi_createServer : HTTP -> Node CreateServer.Options -> PrimIO HTTP.Server
 
 export
-(.createServer) : HasIO io => HTTP -> CreateServer.Options -> io Server
+(.createServer) : HasIO io => HTTP -> CreateServer.Options -> io HTTP.Server
 (.createServer) http options = primIO $ ffi_createServer http $ convertOptions options
 
