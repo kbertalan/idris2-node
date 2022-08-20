@@ -9,11 +9,15 @@ record Address where
   family: String
   address: String
 
+export
+implementation Show Address where
+  show a = "\{show a.port} \{a.family} \{a.address}"
+
 %foreign """
   node:lambda:
   (addr, ctor) => {
      const {port, family, address} = addr
-     return _just(ctor(port, family, address))
+     return ctor(port)(family)(address)
   }
   """
 ffi_fromNode : Node Address -> (Int -> String -> String -> Address) -> Address

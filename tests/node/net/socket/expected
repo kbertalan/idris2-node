@@ -1,0 +1,47 @@
+1/1: Building Socket (Socket.idr)
+
+---socket with error:
+Nothing
+Just 100
+Nothing
+connect ECONNREFUSED 127.0.0.1:3000
+socket closed: True
+
+---socket with success:
+ready state: opening
+pending: True
+connecting: True
+destroyed: False
+timeout: Nothing
+address: Nothing
+local address: Nothing
+local port: Nothing
+ready state: open
+pending: False
+connecting: False
+destroyed: False
+timeout: Just 100
+address: Just "IPv4 127.0.0.1"
+remote address: Just "127.0.0.1"
+remote family: Just "IPv4"
+remote port: Just 3000
+local address: Just "127.0.0.1"
+bytes read: 0
+bytes written: 16
+data: 
+> HTTP/1.1 200 OK
+> Connection: keep-alive
+> Keep-Alive: timeout=5
+> Transfer-Encoding: chunked
+> 
+> 8
+> response
+> 0
+> 
+
+end
+bytes read: 149
+bytes written: 16
+socket closed: False
+ready state: closed
+destroyed: True

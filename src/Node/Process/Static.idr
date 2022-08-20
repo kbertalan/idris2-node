@@ -1,6 +1,5 @@
 module Node.Process.Static
 
-import Language.Reflection
 import Node.Error
 import Node.Internal.Elab
 import Node.Process.Type
