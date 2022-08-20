@@ -5,14 +5,14 @@ modules =
   , Node.Console
   , Node.Console.Console
   , Node.Console.Static
-  , Node.Console.Type
+  , Node.Console.Module
   , Node.Error
   , Node.Event.Internal
   , Node.FS
   , Node.FS.ReadStream
   , Node.FS.Static
   , Node.FS.Stats
-  , Node.FS.Type
+  , Node.FS.Module
   , Node.HTTP
   , Node.HTTP.Agent
   , Node.HTTP.ClientRequest
@@ -23,13 +23,13 @@ modules =
   , Node.HTTP.Server
   , Node.HTTP.ServerResponse
   , Node.HTTP.Static
-  , Node.HTTP.Type
+  , Node.HTTP.Module
   , Node.HTTPS
   , Node.HTTPS.CreateServer
   , Node.HTTPS.Request
   , Node.HTTPS.Server
   , Node.HTTPS.Static
-  , Node.HTTPS.Type
+  , Node.HTTPS.Module
   , Node.HTTP2
   , Node.HTTP2.Connect
   , Node.HTTP2.ClientHttp2Session
@@ -40,7 +40,7 @@ modules =
   , Node.HTTP2.Http2Server
   , Node.HTTP2.ServerHttp2Stream
   , Node.HTTP2.Static
-  , Node.HTTP2.Type
+  , Node.HTTP2.Module
   , Node.Internal.Support
   , Node.Internal.Elab
   , Node.JS.Misc
@@ -56,10 +56,10 @@ modules =
   , Node.Net.Socket.Connect
   , Node.Net.Socket.Type
   , Node.Net.Static
-  , Node.Net.Type
+  , Node.Net.Module
   , Node.Process
   , Node.Process.Static
-  , Node.Process.Type
+  , Node.Process.Module
   , Node.Stream
   , Node.Stream.Writeable
   , Node.Stream.Readable

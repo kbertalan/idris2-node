@@ -1,6 +1,6 @@
 module Node.FS.Stats
 
-import Node.FS.Type
+import Node.FS.Module
 
 public export
 data StatsReturnType

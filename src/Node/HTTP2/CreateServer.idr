@@ -1,7 +1,7 @@
 module Node.HTTP2.CreateServer
 
 import Node
-import Node.HTTP2.Type
+import Node.HTTP2.Module
 import Node.Internal.Support
 import public Node.Net.CreateServer
 
@@ -12,16 +12,16 @@ data PaddingStrategy
   | Aligned
 
 %foreign "node:lambda: (http2) => http2.constants.PADDING_STRATEGY_NONE"
-ffi_paddingStrategy_None : {auto http2 : HTTP2} -> Node PaddingStrategy
+ffi_paddingStrategy_None : {auto http : HTTP2Module} -> Node PaddingStrategy
 
 %foreign "node:lambda: (http2) => http2.constants.PADDING_STRATEGY_MAX"
-ffi_paddingStrategy_Max : {auto http2 : HTTP2} -> Node PaddingStrategy
+ffi_paddingStrategy_Max : {auto http : HTTP2Module} -> Node PaddingStrategy
 
 %foreign "node:lambda: (http2) => http2.constants.PADDING_STRATEGY_ALIGNED"
-ffi_paddingStrategy_Aligned : {auto http2 : HTTP2} -> Node PaddingStrategy
+ffi_paddingStrategy_Aligned : {auto http : HTTP2Module} -> Node PaddingStrategy
 
 export
-convertPaddingStrategy : {auto http2 : HTTP2} -> PaddingStrategy -> Node PaddingStrategy
+convertPaddingStrategy : {auto http : HTTP2Module} -> PaddingStrategy -> Node PaddingStrategy
 convertPaddingStrategy = \case
   None => ffi_paddingStrategy_None
   Max => ffi_paddingStrategy_Max
@@ -168,7 +168,7 @@ ffi_convertOptions :
   Node HTTP2.CreateServer.Options
 
 export
-convertOptions : {auto http2 : HTTP2} -> HTTP2.CreateServer.Options -> Node HTTP2.CreateServer.Options
+convertOptions : {auto http : HTTP2Module} -> HTTP2.CreateServer.Options -> Node HTTP2.CreateServer.Options
 convertOptions o = ffi_convertOptions
   o.maxDeflateDynamicTableSize
   o.maxSettings
@@ -205,7 +205,7 @@ namespace Command
     -> Node Command.Options
 
   export
-  convertOptions : {auto http2 : HTTP2} -> Command.Options -> Node Command.Options
+  convertOptions : {auto http : HTTP2Module} -> Command.Options -> Node Command.Options
   convertOptions o = Command.ffi_convertOptions
     (convertOptions o.server)
     (convertOptions o.net)

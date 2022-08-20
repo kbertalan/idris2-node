@@ -4,7 +4,7 @@ import Node
 import Node.Event.Internal
 import Node.HTTP.IncomingMessage
 import Node.HTTP.ServerResponse
-import Node.HTTP.Type
+import Node.HTTP.Module
 import public Node.Net.Server
 
 %hide Node.Net.Server.Server

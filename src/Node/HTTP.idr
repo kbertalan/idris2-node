@@ -9,12 +9,12 @@ import public Node.HTTP.Request
 import public Node.HTTP.Server
 import public Node.HTTP.ServerResponse
 import public Node.HTTP.Static
-import public Node.HTTP.Type
+import public Node.HTTP.Module
 
 %foreign "node:lambda: () => require('http')"
-ffi_require : PrimIO HTTP
+ffi_require : PrimIO HTTPModule
 
 export
-require : HasIO io => io HTTP
+require : HasIO io => io HTTPModule
 require = primIO $ ffi_require
 

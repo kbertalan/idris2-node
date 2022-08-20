@@ -3,7 +3,7 @@ module Node.Console.Console
 import Data.Buffer
 import Node
 import Node.Error
-import Node.Console.Type
+import Node.Console.Module
 import Node.Stream.Writeable
 
 export

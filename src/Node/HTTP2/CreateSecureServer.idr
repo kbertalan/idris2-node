@@ -2,7 +2,7 @@ module Node.HTTP2.CreateSecureServer
 
 import Node
 import Node.HTTP2.CreateServer
-import Node.HTTP2.Type
+import Node.HTTP2.Module
 import Node.Internal.Support
 import public Node.Net.CreateServer
 import public Node.TLS.CreateServer
@@ -96,7 +96,7 @@ ffi_convertOptions :
   Node CreateSecureServer.Options
 
 export
-convertOptions : {auto http2 : HTTP2} -> CreateSecureServer.Options -> Node CreateSecureServer.Options
+convertOptions : {auto http : HTTP2Module} -> CreateSecureServer.Options -> Node CreateSecureServer.Options
 convertOptions o = ffi_convertOptions
   o.allowHTTP1
   o.maxDeflateDynamicTableSize
@@ -153,7 +153,7 @@ namespace Command
     -> Node CreateSecureServer.Command.Options
 
   export
-  convertOptions : {auto http2 : HTTP2} -> HTTP2.CreateSecureServer.Command.Options -> Node HTTP2.CreateSecureServer.Command.Options
+  convertOptions : {auto http : HTTP2Module} -> HTTP2.CreateSecureServer.Command.Options -> Node HTTP2.CreateSecureServer.Command.Options
   convertOptions o = ffi_convertOptions
     (convertOptions o.server)
     (convertOptions o.context)

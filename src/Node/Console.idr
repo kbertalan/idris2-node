@@ -2,7 +2,7 @@ module Node.Console
 
 import public Node.Console.Console
 import public Node.Console.Static
-import public Node.Console.Type
+import public Node.Console.Module
 
 %foreign "node:lambda: () => require('console')"
 ffi_require : PrimIO ConsoleModule

@@ -1,8 +1,8 @@
-module Node.HTTP.Type
+module Node.HTTP.Module
 
 import Node.HTTP.ClientRequest
 import Node.HTTP.IncomingMessage
 
 export
-data HTTP : Type where [external]
+data HTTPModule : Type where [external]
 

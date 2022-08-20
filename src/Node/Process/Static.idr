@@ -2,7 +2,7 @@ module Node.Process.Static
 
 import Node.Error
 import Node.Internal.Elab
-import Node.Process.Type
+import Node.Process.Module
 import public Node.Stream
 
 %language ElabReflection

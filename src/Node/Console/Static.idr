@@ -4,7 +4,7 @@ import Data.Buffer
 import Node
 import Node.Error
 import Node.Console.Console
-import Node.Console.Type
+import Node.Console.Module
 import Node.Stream.Writeable
 
 %foreign "node:lambda: (tyout, tyerr, console, opts) => new console.Console(opts)"

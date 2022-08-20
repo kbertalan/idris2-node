@@ -1,7 +1,7 @@
 module Node.Net.Static
 
 import Node
-import Node.Net.Type
+import Node.Net.Module
 import Node.Net.Socket
 
 %foreign "node:lambda: (ty, net, opts) => new net.Socket(opts)"

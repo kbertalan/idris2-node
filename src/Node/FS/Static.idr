@@ -3,14 +3,14 @@ module Node.FS.Static
 import Node.Error
 import Node.FS.ReadStream
 import Node.FS.Stats
-import Node.FS.Type
+import Node.FS.Module
 import Node.Internal.Support
 
 %foreign "node:lambda: (fs,path)=>fs.createReadStream(path)"
-ffi_createReadStream : FS -> String -> PrimIO ReadStream
+ffi_createReadStream : FSModule -> String -> PrimIO ReadStream
 
 export
-(.createReadStream) : HasIO io => (fs : FS) -> String -> io ReadStream
+(.createReadStream) : HasIO io => (fs : FSModule) -> String -> io ReadStream
 (.createReadStream) fs path = primIO $ ffi_createReadStream fs path
 
 %foreign """
@@ -28,10 +28,10 @@ export
     }
   }
   """
-ffi_statSync : FS -> {r: StatsReturnType} -> (bigint : Bool) -> String -> PrimIO (Either Error $ Stats r)
+ffi_statSync : FSModule -> {r: StatsReturnType} -> (bigint : Bool) -> String -> PrimIO (Either Error $ Stats r)
 
 export
-(.statSync) : HasIO io => (fs : FS) -> (r : StatsReturnType) -> String -> io (Either Error $ Stats r)
+(.statSync) : HasIO io => (fs : FSModule) -> (r : StatsReturnType) -> String -> io (Either Error $ Stats r)
 (.statSync) fs r path = primIO $ ffi_statSync fs (isBigInt r) path
 
 %foreign """
@@ -44,9 +44,9 @@ export
     )
   }
   """
-ffi_stat : FS -> {r: StatsReturnType} -> (bigint : Bool) -> String -> (Either Error (Stats r) -> PrimIO()) -> PrimIO ()
+ffi_stat : FSModule -> {r: StatsReturnType} -> (bigint : Bool) -> String -> (Either Error (Stats r) -> PrimIO()) -> PrimIO ()
 
 export
-(.stat) : HasIO io => (fs : FS) -> (r: StatsReturnType) -> String -> (Either Error (Stats r) -> IO ()) -> io ()
+(.stat) : HasIO io => (fs : FSModule) -> (r: StatsReturnType) -> String -> (Either Error (Stats r) -> IO ()) -> io ()
 (.stat) fs r path cb = primIO $ ffi_stat fs (isBigInt r) path $ \either => toPrim $ cb either
 
