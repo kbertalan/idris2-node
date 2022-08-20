@@ -42,6 +42,7 @@ modules =
   , Node.HTTP2.Static
   , Node.HTTP2.Type
   , Node.Internal.Support
+  , Node.Internal.Elab
   , Node.JS.Misc
   , Node.JS.IO
   , Node.JS.Std.JSON
@@ -70,8 +71,6 @@ modules =
   , Node.TLS.CreateSecureContext
   , Node.TLS.CreateServer
   , Data.Buffer.Ext
-
--- depends = promise
 
 opts      = "--codegen node"
 

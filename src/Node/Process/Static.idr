@@ -1,8 +1,11 @@
 module Node.Process.Static
 
 import Node.Error
+import Node.Internal.Elab
 import Node.Process.Type
 import public Node.Stream
+
+%language ElabReflection
 
 export
 data StdErr : Type where [external]
@@ -10,9 +13,7 @@ data StdErr : Type where [external]
 public export
 implementation WriteableClass d Error StdErr where
 
-export
-%foreign "node:lambda: (process) => process.stderr"
-(.stderr) : Process -> StdErr
+%runElab mkNodeField (field "stderr") "stderr" `(StdErr)
 
 export
 data StdIn : Type where [external]
@@ -20,9 +21,7 @@ data StdIn : Type where [external]
 public export
 implementation ReadableClass d Error StdIn where
 
-export
-%foreign "node:lambda: (process) => process.stdin"
-(.stdin) : Process -> StdIn
+%runElab mkNodeField (field "stdin") "stdin" `(StdIn)
 
 export
 data StdOut : Type where [external]
@@ -30,7 +29,5 @@ data StdOut : Type where [external]
 public export
 implementation WriteableClass d Error StdOut where
 
-export
-%foreign "node:lambda: (process) => process.stdout"
-(.stdout) : Process -> StdOut
+%runElab mkNodeField (field "stdout") "stdout" `(StdOut)
 

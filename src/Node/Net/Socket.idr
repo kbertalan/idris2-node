@@ -3,11 +3,14 @@ module Node.Net.Socket
 import Node
 import public Node.Error
 import Node.Event.Internal
+import Node.Internal.Elab
 import Node.Internal.Support
 import public Node.Net.Socket.Address
 import public Node.Net.Socket.Connect
 import public Node.Net.Socket.Type
 import public Node.Stream
+
+%language ElabReflection
 
 %foreign "node:lambda: (tys, s, cb) => s.on('close', (b) => cb(b ? _true() : _false())())"
 ffi_onClose : s -> (Bool -> PrimIO ()) -> PrimIO ()
@@ -63,40 +66,33 @@ export
 socketOnTimeout : HasIO io => s -> IO () -> io ()
 socketOnTimeout = on0 ffi_onTimeout
 
-%foreign "node:lambda: (tys, s) => s.address()"
-ffi_address : s -> PrimIO $ Node Address
+%foreign """
+  node:lambda:
+  (tys, s) => {
+    const a = s.address()
+    if (a === undefined || a.port === undefined || a.family === undefined || a.address === undefined) {
+      return _nothing()
+    }
+    return _just(a)
+  }
+  """
+ffi_address : s -> PrimIO $ Maybe $ Node Address
 
 export
-socketAddress : HasIO io => s -> io Address
-socketAddress s = fromNode <$> primIO (ffi_address s)
+socketAddress : HasIO io => s -> io $ Maybe Address
+socketAddress s = map fromNode <$> primIO (ffi_address s)
 
-%foreign "node:lambda: (tys, s) => s.bytesRead"
-ffi_bytesRead : s -> PrimIO Int
-
-export
-socketBytesRead : HasIO io => s -> io Int
-socketBytesRead s = primIO $ ffi_bytesRead s
-
-%foreign "node:lambda: (tys, s) => s.bytesWritten"
-ffi_bytesWritten : s -> PrimIO Int
-
-export
-socketBytesWritten : HasIO io => s -> io Int
-socketBytesWritten s = primIO $ ffi_bytesWritten s
+%runElab mkNodeFieldIO (basic "socketBytesRead") "bytesRead" `(Int)
+%runElab mkNodeFieldIO (basic "socketBytesWritten") "bytesWritten" `(Int)
 
 %foreign "node:lambda: (tys, s, opts) => s.connect(opts)"
 ffi_connect : s -> AnyPtr -> PrimIO s
 
 export
 socketConnect : HasIO io => s -> {auto t : SocketType} -> Connect.options t -> io s
-socketConnect s opts = primIO $ ffi_connect s $ believe_me opts
+socketConnect s {t} opts = primIO $ ffi_connect s $ believe_me $ convertOptions t opts
 
-%foreign "node:lambda: (tys, s) => s.connecting ? _true() : _false()"
-ffi_connecting : s -> PrimIO Bool
-
-export
-socketConnecting : HasIO io => s -> io Bool
-socketConnecting s = primIO $ ffi_connecting s
+%runElab mkNodeFieldIO (basic "socketConnecting") "connecting" `(Bool)
 
 %foreign """
   node:lambda:
@@ -111,12 +107,91 @@ export
 socketDestroy : HasIO io => s -> Maybe Error -> io s
 socketDestroy s e = primIO $ ffi_destroy s e
 
-%foreign "node:lambda: (tys, s) => s.destroyed ? _true() : _false()"
-ffi_destroyed : s -> PrimIO Bool
+%runElab mkNodeFieldIO (basic "socketDestroyed") "destroyed" `(Bool)
+%runElab mkNodeFieldIO (basic "socketLocalAddress") "localAddress" `(Maybe String)
+%runElab mkNodeFieldIO (basic "socketLocalPort") "localPort" `(Maybe Int)
+%runElab mkNodeFieldIO (basic "socketPending") "pending" `(Bool)
+
+%foreign "node:lambda: (tys, s) => s.ref()"
+ffi_ref : s -> PrimIO s
 
 export
-socketDestroyed : HasIO io => s -> io Bool
-socketDestroyed s = primIO $ ffi_destroyed s
+socketRef : HasIO io => s -> io s
+socketRef s = primIO $ ffi_ref s
+
+%runElab mkNodeFieldIO (basic "socketRemoteAddress") "remoteAddress" `(Maybe String)
+%runElab mkNodeFieldIO (basic "socketRemoteFamily") "remoteFamily" `(Maybe String)
+%runElab mkNodeFieldIO (basic "socketRemotePort") "remotePort" `(Maybe Int)
+
+%foreign "node:lambda: (tys, s) => s.resetAndDestroy()"
+ffi_resetAndDestroy : s -> PrimIO s
+
+export
+socketResetAndDestroy : HasIO io => s -> io s
+socketResetAndDestroy s = primIO $ ffi_resetAndDestroy s
+
+%foreign """
+  node:lambda:
+  (tys, s, initialDelay) => {
+    const d = _maybe(initialDelay)
+    if (d) {
+       return s.setKeepAlive(true, d)
+    }
+    return s.setKeepAlive(false)
+  }
+  """
+ffi_setKeepAlive : s -> Maybe Int -> PrimIO s
+
+export
+socketSetKeepAlive : HasIO io => s -> Maybe Int -> io s
+socketSetKeepAlive s initialDelay = primIO $ ffi_setKeepAlive s initialDelay
+
+%foreign "node:lambda: (tys, s, b) => s.setNoDelay(_bool(b))"
+ffi_setNoDelay : s -> Bool -> PrimIO s
+
+export
+socketSetNoDelay : HasIO io => s -> Bool -> io s
+socketSetNoDelay s b = primIO $ ffi_setNoDelay s b
+
+%foreign """
+  node:lambda:
+  (tys, s, timeout) => {
+    const t = _maybe(timeout)
+    if (t) {
+      return s.setTimeout(t)
+    }
+    return s.setTimeout(0)
+  }
+  """
+ffi_setTimeout : s -> Maybe Int -> PrimIO s
+
+export
+socketSetTimeout : HasIO io => s -> Maybe Int -> io s
+socketSetTimeout s timeout = primIO $ ffi_setTimeout s timeout
+
+%foreign """
+  node:lambda: (tys, s) => {
+    const t = s.timeout
+    if (t === undefined || t === null) {
+      return _nothing()
+    }
+    return _just(t)
+  }
+  """
+ffi_timeout : s -> PrimIO $ Maybe Int
+
+export
+socketTimeout : HasIO io => s -> io $ Maybe Int
+socketTimeout s = primIO $ ffi_timeout s
+
+%foreign "node:lambda: (tys, s) => s.unref()"
+ffi_unref : s -> PrimIO s
+
+export
+socketUnref : HasIO io => s -> io s
+socketUnref s = primIO $ ffi_unref s
+
+%runElab mkNodeFieldIO (basic "socketReadyState") "readyState" `(String)
 
 public export
 interface
@@ -140,7 +215,7 @@ interface
   (.onReady) = socketOnReady
   (.onTimeout) : HasIO io => s -> IO () -> io ()
   (.onTimeout) = socketOnTimeout
-  (.address) : HasIO io => s -> io Address
+  (.address) : HasIO io => s -> io $ Maybe Address
   (.address) = socketAddress
   (.bytesRead) : HasIO io => s -> io Int
   (.bytesRead) = socketBytesRead
@@ -155,24 +230,38 @@ interface
   (.destroyed) : HasIO io => s -> io Bool
   (.destroyed) = socketDestroyed
   -- end from WriteableClass
-  -- localAddress
-  -- localPort
+  (.localAddress) : HasIO io => s -> io $ Maybe String
+  (.localAddress) = socketLocalAddress
+  (.localPort) : HasIO io => s -> io $ Maybe Int
+  (.localPort) = socketLocalPort
   -- -- pause from ReadableClass
-  -- pending
-  -- ref
-  -- remoteAddress
-  -- remoteFamily
-  -- remotePort
-  -- resetAndDestroy
+  (.pending) : HasIO io => s -> io Bool
+  (.pending) = socketPending
+  (.ref) : HasIO io => s -> io s
+  (.ref) = socketRef
+  (.remoteAddress) : HasIO io => s -> io $ Maybe String
+  (.remoteAddress) = socketRemoteAddress
+  (.remoteFamily) : HasIO io => s -> io $ Maybe String
+  (.remoteFamily) = socketRemoteFamily
+  (.remotePort) : HasIO io => s -> io $ Maybe Int
+  (.remotePort) = socketRemotePort
+  (.resetAndDestroy) : HasIO io => s -> io s
+  (.resetAndDestroy) = socketResetAndDestroy
   -- -- resume from ReadableClass
   -- -- setEncoding -- skipped, don't switch data type
-  -- setKeepAlive
-  -- setNoDelay
-  -- setTimeout
-  -- timeout
-  -- unref
+  (.setKeepAlive) : HasIO io => s -> Maybe Int -> io s
+  (.setKeepAlive) = socketSetKeepAlive
+  (.setNoDelay) : HasIO io => s -> Bool -> io s
+  (.setNoDelay) = socketSetNoDelay
+  (.setTimeout) : HasIO io => s -> Maybe Int -> io s
+  (.setTimeout) = socketSetTimeout
+  (.timeout) : HasIO io => s -> io $ Maybe Int
+  (.timeout) = socketTimeout
+  (.unref) : HasIO io => s -> io s
+  (.unref) = socketUnref
   -- -- write from WriteableClass
-  -- readyState
+  (.readyState) : HasIO io => s -> io String
+  (.readyState) = socketReadyState
 
 export
 data Socket : (t : SocketType) -> Type where [external]

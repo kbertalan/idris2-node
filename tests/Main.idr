@@ -9,6 +9,7 @@ node = MkTestPool "Node tests" [] (Just Node)
   , "node/http"
   , "node/http2"
   , "node/https"
+  , "node/net/socket"
   ]
 
 js : TestPool
