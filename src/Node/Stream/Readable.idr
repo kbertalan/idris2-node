@@ -7,75 +7,75 @@ import Node.Event.Internal
 ffi_onClose : a -> PrimIO () -> PrimIO ()
 
 export
-readableOnClose : HasIO io => a -> IO () -> io ()
-readableOnClose = on0 ffi_onClose
+unsafeReadableOnClose : HasIO io => a -> IO () -> io ()
+unsafeReadableOnClose = on0 ffi_onClose
 
 %foreign nodeOn1 "data"
 ffi_onData : a -> (b -> PrimIO ()) -> PrimIO ()
 
 export
-readableOnData : HasIO io => a -> (d -> IO ()) -> io ()
-readableOnData = on1 ffi_onData
+unsafeReadableOnData : HasIO io => a -> (d -> IO ()) -> io ()
+unsafeReadableOnData = on1 ffi_onData
 
 %foreign nodeOn0 "end"
 ffi_onEnd : a -> PrimIO () -> PrimIO ()
 
 export
-readableOnEnd : HasIO io => a -> IO () -> io ()
-readableOnEnd = on0 ffi_onEnd
+unsafeReadableOnEnd : HasIO io => a -> IO () -> io ()
+unsafeReadableOnEnd = on0 ffi_onEnd
 
 %foreign nodeOn1 "error"
 ffi_onError : a -> (e -> PrimIO ()) -> PrimIO ()
 
 export
-readableOnError : HasIO io => a -> (e -> IO ()) -> io ()
-readableOnError = on1 ffi_onError
+unsafeReadableOnError : HasIO io => a -> (e -> IO ()) -> io ()
+unsafeReadableOnError = on1 ffi_onError
 
 %foreign nodeOn0 "pause"
 ffi_onPause : a -> PrimIO () -> PrimIO ()
 
 export
-readableOnPause : HasIO io => a -> IO () -> io ()
-readableOnPause = on0 ffi_onPause
+unsafeReadableOnPause : HasIO io => a -> IO () -> io ()
+unsafeReadableOnPause = on0 ffi_onPause
 
 %foreign nodeOn0 "resume"
 ffi_onResume : a -> PrimIO () -> PrimIO ()
 
 export
-readableOnResume : HasIO io => a -> IO () -> io ()
-readableOnResume = on0 ffi_onResume
+unsafeReadableOnResume : HasIO io => a -> IO () -> io ()
+unsafeReadableOnResume = on0 ffi_onResume
 
 %foreign "node:lambda: (tya, reader) => reader.pause()"
 ffi_pause : a -> PrimIO ()
 
 export
-readablePause : HasIO io => a -> io ()
-readablePause a = primIO $ ffi_pause a
+unsafeReadablePause : HasIO io => a -> io ()
+unsafeReadablePause a = primIO $ ffi_pause a
 
 %foreign "node:lambda: (tya, reader) => reader.resume()"
 ffi_resume : a -> PrimIO ()
 
 export
-readableResume : HasIO io => a -> io ()
-readableResume a = primIO $ ffi_resume a
+unsafeReadableResume : HasIO io => a -> io ()
+unsafeReadableResume a = primIO $ ffi_resume a
 
 ||| Readable stream in flowing mode
 public export
 interface ReadableClass d e r | r where
   (.onClose) : HasIO io => r -> IO () -> io ()
-  (.onClose) = readableOnClose
+  (.onClose) = unsafeReadableOnClose
   (.onData) : HasIO io => r -> (d -> IO ()) -> io ()
-  (.onData) = readableOnData
+  (.onData) = unsafeReadableOnData
   (.onEnd) : HasIO io => r -> IO () -> io ()
-  (.onEnd) = readableOnEnd
+  (.onEnd) = unsafeReadableOnEnd
   (.onError) : HasIO io => r -> (e -> IO ()) -> io ()
-  (.onError) = readableOnError
+  (.onError) = unsafeReadableOnError
   (.onPause) : HasIO io => r -> IO () -> io ()
-  (.onPause) = readableOnPause
+  (.onPause) = unsafeReadableOnPause
   (.onResume) : HasIO io => r -> IO () -> io ()
-  (.onResume) = readableOnResume
+  (.onResume) = unsafeReadableOnResume
   (.pause) : HasIO io => r -> io ()
-  (.pause) = readablePause
+  (.pause) = unsafeReadablePause
   (.resume) : HasIO io => r -> io ()
-  (.resume) = readableResume
+  (.resume) = unsafeReadableResume
 

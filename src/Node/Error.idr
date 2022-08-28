@@ -875,27 +875,27 @@ fromString str = case str of
 
 export
 %foreign "node:lambda: (tye, e) => e.message"
-message : e -> String
+unsafeErrorMessage : e -> String
 
 export
 %foreign "node:lambda: (tye, e) => e.stack"
-stack : e -> String
+unsafeErrorStack : e -> String
 
 %foreign "node:lambda: (tye, e) => e.code"
 ffi_code : e -> String
 
 export
-code : e -> Code
-code = fromString . ffi_code
+unsafeErrorCode : e -> Code
+unsafeErrorCode = fromString . ffi_code
 
 public export
 interface ErrorClass e where
   (.message) : e -> String
-  (.message) = message
+  (.message) = unsafeErrorMessage
   (.stack) : e -> String
-  (.stack) = stack
+  (.stack) = unsafeErrorStack
   (.code) : e -> Code
-  (.code) = code
+  (.code) = unsafeErrorCode
 
 export
 data Error : Type where [external]

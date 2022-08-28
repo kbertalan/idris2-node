@@ -21,7 +21,7 @@ socketWithError net = promise $ \resolve', reject' => do
   socket.onClose $ \b => do
     putStrLn "socket closed: \{show b}"
     resolve' ()
-  Socket.(.onError) socket $ \err => putStrLn $ message err
+  Socket.(.onError) socket $ \err => putStrLn err.message
   ignore $ socket.connect $ defaultTCPOptions 3000
 
 socketWithSuccess : NetModule -> Promise () IO ()
@@ -35,7 +35,7 @@ socketWithSuccess net = promise $ \resolve', reject' => do
     if err.code == SystemError EADDRINUSE
       then ignore $ setTimeout (server.close >> doListen) 500
       else do
-        putStrLn "could not start server: \{message err}"
+        putStrLn "could not start server: \{err.message}"
         reject' ()
   server.onRequest $ \req, res => do
     res.writeHead 200 =<< empty
@@ -81,7 +81,7 @@ socketWithSuccess net = promise $ \resolve', reject' => do
       putStrLn "end"
       socket.bytesRead >>= putStrLn . ("bytes read: " <+>) . show
       socket.bytesWritten >>= putStrLn . ("bytes written: " <+>) . show
-    socket.onError $ \err => putStrLn "socket error: \{message err}"
+    socket.onError $ \err => putStrLn "socket error: \{err.message}"
     socket.onClose $ \b => do
       putStrLn "socket closed: \{show b}"
       socket.readyState >>= putStrLn . ("ready state: " <+>)
