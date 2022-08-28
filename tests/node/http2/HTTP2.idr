@@ -43,12 +43,12 @@ main = do
         stream <- session.post "/something" =<< empty
         stream.onResponse $ \headers => do
           putStrLn "HTTP2 POST:"
-          onData stream $ putStrLn
+          stream.onData $ putStrLn . show
           session.close
           server.close
 
-        stream.write "this is the body from the client side request"
-        stream.end
+        stream.write "this is the body from the client side request" Nothing
+        stream.end Nothing
     | Left err => putStrLn "could not create server: \{err.message}"
   pure ()
 
