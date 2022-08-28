@@ -1,12 +1,9 @@
 module HTTPS
 
 import Data.Buffer.Ext
-import Node.Error
 import Node.HTTPS
 import Node.JS.IO
-import Node.Net.Server.Listen
 import Node.Timers
-import Promise
 import System.File
 
 main : IO ()

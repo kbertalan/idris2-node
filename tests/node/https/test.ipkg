@@ -1,6 +1,6 @@
 package test
 
-depends = node, promise
+depends = node
 modules = HTTPS
 main = HTTPS
 executable = test

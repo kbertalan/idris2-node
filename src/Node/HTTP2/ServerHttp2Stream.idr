@@ -1,6 +1,6 @@
 module Node.HTTP2.ServerHttp2Stream
 
-import Data.Buffer
+import public Data.Buffer
 import public Node.Error
 import public Node.HTTP2.Headers
 import public Node.Stream

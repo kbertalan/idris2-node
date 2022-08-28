@@ -2,8 +2,6 @@ module HTTP
 
 import Data.Buffer.Ext
 import Node.HTTP
-import Node.Net.Server.Listen
-import Promise
 
 main : IO ()
 main = do

@@ -1,11 +1,9 @@
 module HTTP2
 
 import Data.Buffer.Ext
-import Node.Error
 import Node.HTTP2
 import Node.JS.IO
 import Node.Timers
-import Promise
 import System.File
 
 main : IO ()

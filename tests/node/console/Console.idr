@@ -1,7 +1,6 @@
 module Console
 
 import Data.Buffer.Ext
-import Data.String
 import Node.Console
 import Node.Process
 

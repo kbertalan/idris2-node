@@ -1,6 +1,6 @@
 package test
 
-depends = node, promise
+depends = node
 modules = HTTP
 main = HTTP
 executable = test

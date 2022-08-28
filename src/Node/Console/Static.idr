@@ -1,11 +1,11 @@
 module Node.Console.Static
 
-import Data.Buffer
+import public Data.Buffer
 import Node
-import Node.Error
+import public Node.Error
 import Node.Console.Console
 import Node.Console.Module
-import Node.Stream.Writeable
+import public Node.Stream.Writeable
 
 %foreign "node:lambda: (tyout, tyerr, console, opts) => new console.Console(opts)"
 ffi_newConsole : ConsoleModule -> Node (Options out err) -> PrimIO Console

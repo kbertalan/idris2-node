@@ -2,8 +2,6 @@ module Socket
 
 import Data.Buffer.Ext
 import Data.String
-import Node.Console
-import Node.Error
 import Node.HTTP
 import Node.Net
 import Node.Timers
