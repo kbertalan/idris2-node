@@ -1,4 +1,5 @@
 1/1: Building FS (FS.idr)
+Now compiling the executable: test
 run paused
 run resumed
 run data: rm -rf build
