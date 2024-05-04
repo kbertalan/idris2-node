@@ -1,5 +1,3 @@
-1/1: Building Socket (Socket.idr)
-Now compiling the executable: test
 
 ---socket with error:
 Nothing
@@ -27,6 +25,7 @@ remote address: Just "127.0.0.1"
 remote family: Just "IPv4"
 remote port: Just 3000
 local address: Just "127.0.0.1"
+local port: Just 3001
 bytes read: 0
 bytes written: 16
 data: 

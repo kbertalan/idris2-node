@@ -22,6 +22,7 @@
 
             stdenv
             gmp
+            openssl
           ];
 
           shellHook = ''

@@ -1,0 +1,7 @@
+package tests
+
+depends = golden-runner-helper
+
+main = Tests
+executable=tests
+sourcedir = "runner"

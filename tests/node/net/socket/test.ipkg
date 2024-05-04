@@ -4,4 +4,4 @@ depends = node, promise
 modules = Socket
 main = Socket
 executable = test
-opts = "--no-color --console-width 0"
+opts = "--no-color --console-width 0 --codegen node"

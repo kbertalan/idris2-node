@@ -4,4 +4,4 @@ depends = node
 modules = HTTPS
 main = HTTPS
 executable = test
-opts = "--no-color --console-width 0"
+opts = "--no-color --console-width 0 --codegen node"

@@ -1,12 +1,9 @@
-1/1: Building FS (FS.idr)
-Now compiling the executable: test
 run paused
 run resumed
 run data: rm -rf build
 run data: 
-run data: $1 --build test.ipkg
+run data: pack -q build test.ipkg
 run data: node build/exec/test
-run data: 
 run data: 
 
 run ended

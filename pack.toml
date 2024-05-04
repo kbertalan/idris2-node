@@ -1,0 +1,5 @@
+[custom.all.node]
+type = "local"
+path = "."
+ipkg = "node.ipkg"
+test = "tests/tests.ipkg"

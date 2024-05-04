@@ -4,4 +4,4 @@ depends = node
 modules = Console
 main = Console
 executable = test
-opts = "--no-color --console-width 0"
+opts = "--no-color --console-width 0 --codegen node"

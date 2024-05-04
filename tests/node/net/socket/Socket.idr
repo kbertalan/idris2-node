@@ -22,7 +22,8 @@ socketWithError net = promise $ \resolve', reject' => do
     putStrLn "socket closed: \{show b}"
     resolve' ()
   Socket.(.onError) socket $ \err => putStrLn err.message
-  ignore $ socket.connect $ defaultTCPOptions 3000
+  let tcpOptions = { host := Just "127.0.0.1" } (defaultTCPOptions 3000)
+  ignore $ socket.connect tcpOptions
 
 socketWithSuccess : NetModule -> Promise () IO ()
 socketWithSuccess net = promise $ \resolve', reject' => do
@@ -44,7 +45,10 @@ socketWithSuccess net = promise $ \resolve', reject' => do
 
   server.onListening $ do
     socket <- net.newSocket defaultOptions { t = TCP }
-    socket <- socket.connect $ defaultTCPOptions 3000
+    let tcpOptions = { host := Just "127.0.0.1"
+                     , localPort := Just 3001
+                     } (defaultTCPOptions 3000)
+    socket <- socket.connect tcpOptions
     socket.readyState >>= putStrLn . ("ready state: " <+>)
     socket.pending >>= putStrLn . ("pending: " <+>) . show
     socket.connecting >>= putStrLn . ("connecting: " <+>) . show
@@ -69,7 +73,7 @@ socketWithSuccess net = promise $ \resolve', reject' => do
       socket.remoteFamily >>= putStrLn . ("remote family: " <+>) . show
       socket.remotePort >>= putStrLn . ("remote port: " <+>) . show
       socket.localAddress >>= putStrLn . ("local address: " <+>) . show
-      -- socket.localPort >>= putStrLn . ("local port: " <+>) . show
+      socket.localPort >>= putStrLn . ("local port: " <+>) . show
       socket.write "GET / HTTP/1.1\n\n" Nothing
       socket.end Nothing { e = Error, d = Buffer }
       socket.bytesRead >>= putStrLn . ("bytes read: " <+>) . show
