@@ -67,13 +67,13 @@ nodeFieldDecl fnName fieldName fieldType = [ foreignDecl, fnDecl, fnDef ]
     foreignName = basic "ffi_\{fieldName}"
 
     foreignDecl : Decl
-    foreignDecl = IClaim EmptyFC MW Private [foreignFnOpt]
-                    $ MkTy EmptyFC EmptyFC foreignName 
+    foreignDecl = IClaim $ NoFC $ MkIClaimData MW Private [foreignFnOpt]
+                    $ MkTy EmptyFC (NoFC foreignName)
                     $ IPi EmptyFC MW ExplicitArg Nothing (IBindVar EmptyFC "a") fieldType
 
     fnDecl : Decl
-    fnDecl = IClaim EmptyFC MW Export []
-               $ MkTy EmptyFC EmptyFC fnName
+    fnDecl = IClaim $ NoFC $ MkIClaimData MW Export []
+               $ MkTy EmptyFC (NoFC fnName)
                $ IPi EmptyFC MW ExplicitArg Nothing (IBindVar EmptyFC "a") fieldType
 
     fnDef : Decl
@@ -101,14 +101,14 @@ nodeFieldIODecl fnName fieldName fieldType = [ foreignDecl, fnDecl, fnDef ]
     foreignName = basic "ffi_\{fieldName}"
 
     foreignDecl : Decl
-    foreignDecl = IClaim EmptyFC MW Private [foreignFnOpt]
-                    $ MkTy EmptyFC EmptyFC foreignName
+    foreignDecl = IClaim $ NoFC $ MkIClaimData MW Private [foreignFnOpt]
+                    $ MkTy EmptyFC (NoFC foreignName)
                     $ IPi EmptyFC MW ExplicitArg Nothing (IBindVar EmptyFC "a")
                       $ IApp EmptyFC (IVar EmptyFC $ basic "PrimIO") fieldType
 
     fnDecl : Decl
-    fnDecl = IClaim EmptyFC MW Export []
-               $ MkTy EmptyFC EmptyFC fnName
+    fnDecl = IClaim $ NoFC $ MkIClaimData MW Export []
+               $ MkTy EmptyFC (NoFC fnName)
                $ IPi EmptyFC MW AutoImplicit Nothing (IApp EmptyFC (IVar EmptyFC $ basic "HasIO") (IBindVar EmptyFC "io"))
                  $ IPi EmptyFC MW ExplicitArg Nothing (IBindVar EmptyFC "a")
                    $ IApp EmptyFC (IBindVar EmptyFC "io") fieldType
