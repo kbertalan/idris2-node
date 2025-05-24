@@ -61,7 +61,7 @@ nodeFieldDecl fnName fieldName fieldType = [ foreignDecl, fnDecl, fnDef ]
     nodeCode = "node:lambda: (tyx, x) => \{fieldConvert fieldType $ "x." <+> fieldName}"
 
     foreignFnOpt : FnOpt
-    foreignFnOpt = ForeignFn [ IApp EmptyFC (IVar EmptyFC (UN $ Basic "fromString")) (IPrimVal EmptyFC $ Str nodeCode) ]
+    foreignFnOpt = ForeignFn [ IApp EmptyFC (IVar EmptyFC (basic "fromString")) (IPrimVal EmptyFC $ Str nodeCode) ]
 
     foreignName : Name
     foreignName = basic "ffi_\{fieldName}"
@@ -69,17 +69,17 @@ nodeFieldDecl fnName fieldName fieldType = [ foreignDecl, fnDecl, fnDef ]
     foreignDecl : Decl
     foreignDecl = IClaim $ NoFC $ MkIClaimData MW Private [foreignFnOpt]
                     $ MkTy EmptyFC (NoFC foreignName)
-                    $ IPi EmptyFC MW ExplicitArg Nothing (IBindVar EmptyFC "a") fieldType
+                    $ IPi EmptyFC MW ExplicitArg Nothing (IBindVar EmptyFC $ basic "a") fieldType
 
     fnDecl : Decl
     fnDecl = IClaim $ NoFC $ MkIClaimData MW Export []
                $ MkTy EmptyFC (NoFC fnName)
-               $ IPi EmptyFC MW ExplicitArg Nothing (IBindVar EmptyFC "a") fieldType
+               $ IPi EmptyFC MW ExplicitArg Nothing (IBindVar EmptyFC $ basic "a") fieldType
 
     fnDef : Decl
     fnDef = IDef EmptyFC fnName
               [ PatClause EmptyFC
-                  (IApp EmptyFC (IVar EmptyFC fnName) (IBindVar EmptyFC "a"))
+                  (IApp EmptyFC (IVar EmptyFC fnName) (IBindVar EmptyFC $ basic "a"))
                   (IApp EmptyFC (IVar EmptyFC foreignName) (IVar EmptyFC (basic "a")))
               ]
 
@@ -95,7 +95,7 @@ nodeFieldIODecl fnName fieldName fieldType = [ foreignDecl, fnDecl, fnDef ]
     nodeCode = "node:lambda: (tyx, x) => \{fieldConvert fieldType $ "x." <+> fieldName}"
 
     foreignFnOpt : FnOpt
-    foreignFnOpt = ForeignFn [ IApp EmptyFC (IVar EmptyFC (UN $ Basic "fromString")) (IPrimVal EmptyFC $ Str nodeCode) ]
+    foreignFnOpt = ForeignFn [ IApp EmptyFC (IVar EmptyFC (basic "fromString")) (IPrimVal EmptyFC $ Str nodeCode) ]
 
     foreignName : Name
     foreignName = basic "ffi_\{fieldName}"
@@ -103,20 +103,20 @@ nodeFieldIODecl fnName fieldName fieldType = [ foreignDecl, fnDecl, fnDef ]
     foreignDecl : Decl
     foreignDecl = IClaim $ NoFC $ MkIClaimData MW Private [foreignFnOpt]
                     $ MkTy EmptyFC (NoFC foreignName)
-                    $ IPi EmptyFC MW ExplicitArg Nothing (IBindVar EmptyFC "a")
+                    $ IPi EmptyFC MW ExplicitArg Nothing (IBindVar EmptyFC $ basic "a")
                       $ IApp EmptyFC (IVar EmptyFC $ basic "PrimIO") fieldType
 
     fnDecl : Decl
     fnDecl = IClaim $ NoFC $ MkIClaimData MW Export []
                $ MkTy EmptyFC (NoFC fnName)
-               $ IPi EmptyFC MW AutoImplicit Nothing (IApp EmptyFC (IVar EmptyFC $ basic "HasIO") (IBindVar EmptyFC "io"))
-                 $ IPi EmptyFC MW ExplicitArg Nothing (IBindVar EmptyFC "a")
-                   $ IApp EmptyFC (IBindVar EmptyFC "io") fieldType
+               $ IPi EmptyFC MW AutoImplicit Nothing (IApp EmptyFC (IVar EmptyFC $ basic "HasIO") (IBindVar EmptyFC $ basic "io"))
+                 $ IPi EmptyFC MW ExplicitArg Nothing (IBindVar EmptyFC $ basic "a")
+                   $ IApp EmptyFC (IBindVar EmptyFC $ basic "io") fieldType
 
     fnDef : Decl
     fnDef = IDef EmptyFC fnName
               [ PatClause EmptyFC
-                  (IApp EmptyFC (IVar EmptyFC fnName) (IBindVar EmptyFC "a"))
+                  (IApp EmptyFC (IVar EmptyFC fnName) (IBindVar EmptyFC $ basic "a"))
                   (IApp EmptyFC (IVar EmptyFC $ basic "primIO") $ IApp EmptyFC (IVar EmptyFC foreignName) (IVar EmptyFC (basic "a")))
               ]
 
